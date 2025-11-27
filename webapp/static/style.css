@@ -1,0 +1,593 @@
+/* =======================
+   ОСНОВА
+   ======================= */
+body {
+    margin: 0;
+    padding: 0;
+    background: #f5f5f7;
+    font-family: "Inter", sans-serif;
+    overflow-x: hidden;
+}
+
+/* ПАДДИНГ ДЛЯ ВСЕХ СТРАНИЦ, ЧТОБЫ НЕ ПЕРЕКРЫВАЛОСЬ САЙДБАРОМ */
+.page-wrapper {
+    padding-top: 120px;
+}
+
+/* =======================
+   ВЫЕЗЖАЮЩИЙ SIDEBAR
+   ======================= */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -240px;
+    width: 240px;
+    height: 100vh;
+    background: #ffffff;
+    border-radius: 0 18px 18px 0;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+    transition: 0.35s ease;
+    padding-top: 90px;
+    z-index: 2000;
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+/* Вкладка */
+.sidebar-tab {
+    position: absolute;
+    top: 100px;
+    right: -48px;
+    width: 48px;
+    height: 90px;
+    background: #6a5acd;
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.18);
+    z-index: 2001;
+    transition: 0.2s;
+}
+
+.sidebar-tab:hover {
+    transform: translateX(4px);
+}
+
+/* Контент меню */
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding-left: 22px;
+}
+
+.sidebar-content a {
+    font-size: 18px;
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.2s ease;
+}
+
+.sidebar-content a:hover {
+    transform: translateX(6px);
+    color: #6a5acd;
+}
+
+/* =======================
+   ГЛАВНАЯ СТРАНИЦА
+   ======================= */
+
+.home-content {
+    width: 90%;
+    margin: 0 auto;
+}
+
+/* Карточка баланса */
+.balance-card {
+    width: 90%;
+    margin: 40px auto 35px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    text-align: center;
+}
+
+.balance-title {
+    color: #777;
+    font-size: 18px;
+}
+
+.balance-value {
+    font-size: 38px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* Вкладки */
+.home-tabs {
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    gap: 10px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 16px;
+    text-align: center;
+    background: #6a5acd;
+    color: white;
+    text-decoration: none;
+    border-radius: 14px;
+    font-size: 17px;
+    transition: 0.25s;
+}
+
+.tab-btn:hover {
+    background: #5848c2;
+}
+
+/* =======================
+   AUTH & PROFILE
+   ======================= */
+
+.auth-card {
+    width: 360px;
+    margin: 150px auto 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.auth-card h1 {
+    margin-bottom: 25px;
+    font-size: 28px;
+}
+
+.auth-card input {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 18px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.auth-card input:focus {
+    border-color: #6a5acd;
+    box-shadow: 0 0 6px rgba(106,90,205,0.25);
+    outline: none;
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 14px;
+    background: #6a5acd;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: 0.25s;
+}
+
+.auth-btn:hover {
+    background: #5848c2;
+}
+
+.profile-line {
+    font-size: 20px;
+    margin-bottom: 25px;
+}
+
+.profile-actions {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.profile-btn {
+    padding: 12px;
+    background: #6a5acd;
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-size: 17px;
+}
+
+.profile-btn:hover {
+    background: #5848c2;
+}
+
+.profile-btn.danger {
+    background: #e05b5b;
+}
+
+.profile-btn.danger:hover {
+    background: #c94a4a;
+}
+
+.select-input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    margin-bottom: 18px;
+    font-size: 16px;
+}
+
+/* ===== ИСТОРИЯ (НОВЫЙ ЧИСТЫЙ ВАРИАНТ) ===== */
+
+.history-container {
+    width: 92%;
+    max-width: 600px;
+    margin: 140px auto 40px auto;
+}
+
+.history-title {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 25px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.history-item {
+    background: #ffffff;
+    padding: 16px 18px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    margin-bottom: 14px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.item-cat {
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+}
+
+.item-desc {
+    font-size: 15px;
+    color: #666;
+}
+
+.item-date {
+    font-size: 13px;
+    color: #999;
+}
+
+.item-right {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: right;
+    min-width: 100px;
+}
+
+.item-right.inc {
+    color: #39c46a;
+}
+
+.item-right.exp {
+    color: #ff4f4f;
+}
+
+.no-history {
+    text-align: center;
+    font-size: 16px;
+    color: #777;
+    margin-top: 50px;
+}
+/* ===== СТАТИСТИКА ===== */
+
+.stats-container {
+    width: 92%;
+    max-width: 600px;
+    margin: 140px auto 40px auto;
+}
+
+.stats-title {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.stats-block {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.inc-title, .exp-title {
+    font-size: 18px;
+    color: #666;
+    margin: 10px 0 4px 0;
+}
+
+.inc-value {
+    font-size: 26px;
+    font-weight: bold;
+    color: #37b24d;
+}
+
+.exp-value {
+    font-size: 26px;
+    font-weight: bold;
+    color: #f03e3e;
+}
+
+#chart {
+    width: 100%;
+    height: 300px;
+}
+.chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    margin-top: 30px;
+}
+
+#chart {
+    width: 100% !important;
+    height: 100% !important;
+}
+/* =======================
+   ОТЛОЖЕННЫЕ ПОКУПКИ (WISHLIST)
+   ======================= */
+
+.wishlist-container {
+    width: 92%;
+    max-width: 600px;
+    margin: 140px auto 40px auto;
+}
+
+.wishlist-title {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 25px;
+    font-weight: 700;
+}
+
+.wish-card {
+    background: #ffffff;
+    padding: 18px 20px;
+    border-radius: 16px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.10);
+    margin-bottom: 16px;
+}
+
+.wish-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 6px;
+}
+
+.wish-price {
+    font-size: 17px;
+    color: #6a5acd;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.wish-date {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 12px;
+}
+
+.wish-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.wish-btn {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    border-radius: 12px;
+    background: #6a5acd;
+    color: white;
+    font-size: 16px;
+    text-decoration: none;
+    transition: 0.25s;
+}
+
+.wish-btn:hover {
+    background: #5848c2;
+}
+
+.wish-btn.danger {
+    background: #e05b5b;
+}
+
+.wish-btn.danger:hover {
+    background: #c94a4a;
+}
+
+/* =======================
+   ADD WISH PAGE
+   ======================= */
+
+.add-wish-card {
+    width: 360px;
+    margin: 150px auto 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.add-wish-card h1 {
+    margin-bottom: 25px;
+    font-size: 28px;
+}
+
+.add-wish-card input {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 18px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.add-wish-card input:focus {
+    border-color: #6a5acd;
+    box-shadow: 0 0 6px rgba(106,90,205,0.25);
+    outline: none;
+}
+
+.add-wish-btn {
+    width: 100%;
+    padding: 14px;
+    background: #6a5acd;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: 0.25s;
+}
+
+.add-wish-btn:hover {
+    background: #5848c2;
+}
+/* =======================
+   REMIND PICKER — новая версия
+   ======================= */
+
+.remind-box {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    height: 52px;
+
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 0 12px;
+    margin-bottom: 18px;
+
+    box-shadow: 0 0 6px rgba(106,90,205,0.15);
+}
+
+/* Поле ввода без бордера */
+.remind-number {
+    flex: 1;
+    height: 100%;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    font-size: 16px;
+    background: transparent;
+    outline: none;
+}
+
+/* Select с фиолетовой рамкой */
+.remind-unit {
+    border: 1px solid #6a5acd !important;
+    border-radius: 10px;
+    padding: 10px 10px;
+    font-size: 15px;
+
+    background: white;
+    outline: none;
+    cursor: pointer;
+
+    /* ключевой момент — сдвигаем ЛЕВЕЕ */
+    margin-left: 6px;
+}
+/* =======================
+   WISHLIST CARD — красивый стиль
+   ======================= */
+
+.wish-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    width: 92%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.wish-top {
+    margin-bottom: 16px;
+}
+
+.wish-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #222;
+}
+
+.wish-price {
+    font-size: 18px;
+    color: #6a5acd;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.wish-date {
+    font-size: 14px;
+    color: #777;
+    margin-top: 6px;
+}
+
+.wish-cancel {
+    display: block;
+    text-align: center;
+
+    background: #e05b5b;
+    color: white;
+    padding: 12px;
+    border-radius: 12px;
+
+    font-size: 17px;
+    text-decoration: none;
+    margin-top: 12px;
+    transition: 0.25s;
+}
+
+.wish-cancel:hover {
+    background: #c94a4a;
+}
+
+
+

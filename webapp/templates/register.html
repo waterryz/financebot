@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+<body>
+
+<div class="auth-card">
+    <h1>Регистрация</h1>
+
+    {% if error %}
+    <p class="auth-error">{{ error }}</p>
+    {% endif %}
+
+    <form method="post">
+        <input type="text" name="username" placeholder="Логин" required>
+        <input type="password" name="password" placeholder="Пароль" required>
+        <button type="submit" class="auth-btn">Создать аккаунт</button>
+    </form>
+
+    <p class="auth-link">Уже есть аккаунт?
+        <a href="/login">Войти</a>
+    </p>
+</div>
+
+</body>
+</html>

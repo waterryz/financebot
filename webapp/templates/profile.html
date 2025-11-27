@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Профиль</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script>
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+        }
+    </script>
+</head>
+<body>
+<div class="sidebar" id="sidebar">
+
+    <div class="sidebar-tab" onclick="toggleSidebar()">
+        ☰
+    </div>
+
+    <div class="sidebar-content">
+        <a href="/home?token={{ token }}">🏠 Главная</a>
+        <a href="/add_expense?token={{ token }}">➖ Добавить расход</a>
+        <a href="/add_income?token={{ token }}">➕ Добавить доход</a>
+        <a href="/history?token={{ token }}">📜 История</a>
+        <a href="/wishlist?token={{ token }}">🕒 Отложенные покупки</a>
+        <a href="/stats?token={{ token }}">📊 Статистика</a>
+        <a href="/profile?token={{ token }}">👤 Профиль</a>
+        <a href="/login">🚪 Выйти</a>
+    </div>
+
+</div>
+
+<div class="auth-card">
+    <h1>Профиль</h1>
+
+    <p class="profile-line"><b>Логин:</b> {{ username }}</p>
+
+    <div class="profile-actions">
+        <a class="profile-btn" href="/settings?token={{ token }}">⚙ Настройки</a>
+        <a class="profile-btn danger" href="/delete_account?token={{ token }}">🗑 Удалить аккаунт</a>
+        <a class="profile-btn" href="/home?token={{ token }}">⬅ На главную</a>
+    </div>
+</div>
+
+</body>
+</html>

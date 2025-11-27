@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Главная</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+        }
+    </script>
+</head>
+<body>
+
+<!-- Сайдбар -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-tab" onclick="toggleSidebar()">☰</div>
+
+    <div class="sidebar-content">
+        <a href="/home?token={{ token }}">🏠 Главная</a>
+        <a href="/add_expense?token={{ token }}">➖ Добавить расход</a>
+        <a href="/add_income?token={{ token }}">➕ Добавить доход</a>
+        <a href="/history?token={{ token }}">📜 История</a>
+        <a href="/wishlist?token={{ token }}">🕒 Отложенные покупки</a>
+        <a href="/stats?token={{ token }}">📊 Статистика</a>
+        <a href="/profile?token={{ token }}">👤 Профиль</a>
+        <a href="/login">🚪 Выйти</a>
+    </div>
+</div>
+
+<!-- Контент -->
+<div class="home-content">
+
+    <!-- КАРТОЧКА БАЛАНСА -->
+    <div class="balance-card">
+        <p class="balance-title">Баланс</p>
+        <p class="balance-value">{{ balance }} ₸</p>
+    </div>
+
+    <!-- ВКЛАДКИ -->
+    <div class="home-tabs">
+        <a href="/add_income?token={{ token }}" class="tab-btn">➕ Доход</a>
+        <a href="/add_expense?token={{ token }}" class="tab-btn">➖ Расход</a>
+        <a href="/history?token={{ token }}" class="tab-btn">📜 История</a>
+    </div>
+
+</div>
+
+</body>
+</html>

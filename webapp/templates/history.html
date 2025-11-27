@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>История операций</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+        }
+    </script>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+
+    <div class="sidebar-tab" onclick="toggleSidebar()">
+        ☰
+    </div>
+
+    <div class="sidebar-content">
+        <a href="/home?token={{ token }}">🏠 Главная</a>
+        <a href="/add_expense?token={{ token }}">➖ Добавить расход</a>
+        <a href="/add_income?token={{ token }}">➕ Добавить доход</a>
+        <a href="/history?token={{ token }}">📜 История</a>
+        <a href="/stats?token={{ token }}">📊 Статистика</a>
+        <a href="/wishlist?token={{ token }}">⏳ Отложенные покупки</a>
+        <a href="/profile?token={{ token }}">👤 Профиль</a>
+        <a href="/login">🚪 Выйти</a>
+    </div>
+
+</div>
+
+
+<div class="history-container">
+
+    <h1 class="history-title">История операций</h1>
+
+    {% if not items %}
+        <p class="no-history">История пуста 😐</p>
+    {% else %}
+        {% for item in items %}
+        <div class="history-item">
+
+            <div class="item-left">
+
+                <div class="item-cat">{{ item[2] }}</div>
+
+                {% if item[3] %}
+                    <div class="item-desc">{{ item[3] }}</div>
+                {% endif %}
+
+                <div class="item-date">
+                    {{ item[4].strftime("%d.%m %H:%M") }}
+                </div>
+            </div>
+
+            <div class="item-right {{ 'inc' if item[1] == 'income' else 'exp' }}">
+                {{ '+' if item[1] == 'income' else '-' }}{{ item[0] }} ₸
+            </div>
+
+        </div>
+        {% endfor %}
+    {% endif %}
+
+</div>
+
+</body>
+</html>

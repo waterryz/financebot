@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Статистика</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+        }
+    </script>
+</head>
+
+<body>
+
+<!-- SIDE BAR -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-tab" onclick="toggleSidebar()">☰</div>
+
+    <div class="sidebar-content">
+        <a href="/home?token={{ token }}">🏠 Главная</a>
+        <a href="/add_expense?token={{ token }}">➖ Расход</a>
+        <a href="/add_income?token={{ token }}">➕ Доход</a>
+        <a href="/history?token={{ token }}">📜 История</a>
+        <a href="/wishlist?token={{ token }}">🕒 Отложенные покупки</a>
+        <a href="/stats?token={{ token }}">📊 Статистика</a>
+        <a href="/profile?token={{ token }}">👤 Профиль</a>
+        <a href="/login">🚪 Выйти</a>
+    </div>
+</div>
+
+<div class="page-wrapper">
+
+    <div class="stats-container">
+
+        <h1 class="stats-title">Статистика</h1>
+
+        <div class="stats-block">
+            <p class="inc-title">Доходы:</p>
+            <p class="inc-value">{{ income }} ₸</p>
+
+            <p class="exp-title">Расходы:</p>
+            <p class="exp-value">{{ expense }} ₸</p>
+        </div>
+
+        <!-- Диаграмма -->
+        <div class="chart-wrapper">
+            <canvas id="chart"></canvas>
+        </div>
+
+
+    </div>
+
+</div>
+
+<script>
+const ctx = document.getElementById('chart').getContext('2d');
+
+new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: {{ labels | tojson }},
+        datasets: [{
+            data: {{ values | tojson }},
+            backgroundColor: [
+                '#ff6b6b',
+                '#4dabf7',
+                '#ffd43b',
+                '#69db7c',
+                '#845ef7',
+                '#ffa94d',
+                '#40c057'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+</script>
+
+</body>
+</html>

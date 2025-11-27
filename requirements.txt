@@ -1,3 +1,6 @@
-python-telegram-bot==21.6
+fastapi
+uvicorn
 psycopg2-binary
-python-dotenv
+bcrypt
+python-multipart
+jinja2

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Отложенные покупки</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+        }
+    </script>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-tab" onclick="toggleSidebar()">
+        ☰
+    </div>
+
+    <div class="sidebar-content">
+        <a href="/home?token={{ token }}">🏠 Главная</a>
+        <a href="/add_expense?token={{ token }}">➖ Добавить расход</a>
+        <a href="/add_income?token={{ token }}">➕ Добавить доход</a>
+        <a href="/history?token={{ token }}">📜 История</a>
+        <a href="/stats?token={{ token }}">📊 Статистика</a>
+        <a href="/wishlist?token={{ token }}">🕒 Отложенные покупки</a>
+        <a href="/profile?token={{ token }}">👤 Профиль</a>
+        <a href="/login">🚪 Выйти</a>
+    </div>
+</div>
+
+
+<div class="wishlist-container">
+
+    <h1 class="wishlist-title">🕒 Отложенные покупки</h1>
+
+    <a href="/add_wish?token={{ token }}" class="tab-btn" style="display:block; text-align:center; margin-bottom:25px;">
+        ➕ Добавить желание
+    </a>
+
+    {% if items %}
+        {% for item in items %}
+        <div class="wish-card">
+
+            <div class="wish-top">
+                <div class="wish-name">{{ item[1] }}</div>
+
+                {% if item[2] and item[2] != 0 %}
+                    <div class="wish-price">{{ item[2] }} ₸</div>
+                {% else %}
+                    <div class="wish-price" style="color:#888; font-weight:400;">цена не указана</div>
+                {% endif %}
+
+                <div class="wish-date">
+                    🕒 Напоминание: {{ item[3].strftime('%Y-%m-%d %H:%M') }}
+                </div>
+            </div>
+
+            <a class="wish-cancel" href="/cancel_wish?id={{ item[0] }}&token={{ token }}">
+                ❌ Отменить
+            </a>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="no-history">Пока нет отложенных покупок 🙂</p>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
