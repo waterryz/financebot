@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Отложенные покупки</title>
+    <title>Мои цели</title>
     <link rel="stylesheet" href="/static/style.css">
 
     <script>
@@ -32,57 +32,67 @@ function toggleProfileMenu() {
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-    <div class="sidebar-tab" onclick="toggleSidebar()">
-        ☰
-    </div>
+    <div class="sidebar-tab" onclick="toggleSidebar()">☰</div>
 
     <div class="sidebar-content">
         <a href="/home?token={{ token }}">🏠 Главная</a>
         <a href="/add_expense?token={{ token }}">➖ Добавить расход</a>
         <a href="/add_income?token={{ token }}">➕ Добавить доход</a>
         <a href="/history?token={{ token }}">📜 История</a>
-        <a href="/goals?token={{ token }}">🎯 Цели</a>
-
-        <a href="/stats?token={{ token }}">📊 Статистика</a>
         <a href="/wishlist?token={{ token }}">🕒 Отложенные покупки</a>
+        <a href="/goals?token={{ token }}">🎯 Цели</a>
+        <a href="/stats?token={{ token }}">📊 Статистика</a>
+
     </div>
 </div>
 
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
 
-<div class="wishlist-container">
+    <div class="wishlist-container">
+        <h1 class="wishlist-title">🎯 Мои цели</h1>
 
-    <h1 class="wishlist-title">🕒 Отложенные покупки</h1>
+        <!-- Кнопка добавить -->
+        <a href="/add_goal?token={{ token }}"
+           class="goal-btn"
+           style="margin-bottom: 20px; display: block; text-align: center;">
+            ➕ Добавить цель
+        </a>
 
-    <a href="/add_wish?token={{ token }}" class="tab-btn" style="display:block; text-align:center; margin-bottom:25px;">
-        ➕ Добавить желание
-    </a>
-
-    {% if items %}
-        {% for item in items %}
+        <!-- Список всех целей -->
+        {% for g in goals %}
         <div class="wish-card">
 
             <div class="wish-top">
-                <div class="wish-name">{{ item[1] }}</div>
-
-                {% if item[2] and item[2] != 0 %}
-                    <div class="wish-price">{{ item[2] }} ₸</div>
-                {% else %}
-                    <div class="wish-price" style="color:#888; font-weight:400;">цена не указана</div>
-                {% endif %}
-
+                <div class="wish-name">{{ g.name }}</div>
+                <div class="wish-price">{{ g.saved }} / {{ g.target }} ₸</div>
                 <div class="wish-date">
-                    🕒 Напоминание: {{ item[3].strftime('%Y-%m-%d %H:%M') }}
+                    Создана: {{ g.date }}
                 </div>
             </div>
 
-            <a class="wish-cancel" href="/cancel_wish?id={{ item[0] }}&token={{ token }}">
-                ❌ Отменить
-            </a>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ g.percent }}%;"></div>
+            </div>
+
+            <div class="wish-actions">
+                <a href="/goal_edit?token={{ token }}&id={{ g.id }}" class="wish-btn">
+                    ✏ Изменить
+                </a>
+
+                <a href="/goal_delete?token={{ token }}&id={{ g.id }}" class="wish-btn danger">
+                    🗑 Удалить
+                </a>
+            </div>
+
         </div>
         {% endfor %}
-    {% else %}
-        <p class="no-history">Пока нет отложенных покупок 🙂</p>
-    {% endif %}
+
+        {% if goals|length == 0 %}
+            <p class="no-history">Целей пока нет</p>
+        {% endif %}
+
+    </div>
 
 </div>
 

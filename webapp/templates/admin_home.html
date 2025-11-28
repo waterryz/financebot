@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ — Главная</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="admin-sidebar">
+
+    <h3 class="admin-title-sidebar">Админ</h3>
+    <a href="/admin?admin={{ admin_name }}">🏠 Главная</a>
+    <a href="/admin/users?admin={{ admin_name }}">👥 Пользователи</a>
+    <a href="/admin/transactions?admin={{ admin_name }}">💸 Транзакции</a>
+    <a href="/admin/stats?admin={{ admin_name }}">📊 Статистика</a>
+    <a href="/admin/logs?admin={{ admin_name }}">📄 Логи</a>
+
+    <h3 class="admin-title-sidebar" style="margin-top: 20px;">Пользователь</h3>
+    <a href="/login">🚪 Выйти</a>
+</div>
+
+
+
+<div class="admin-content">
+    <div class="admin-card">
+        <h1 class="admin-title">Админ панель</h1>
+
+        <p>Добро пожаловать, <b>{{ admin_name }}</b>!</p>
+        <p>Выберите раздел слева.</p>
+
+    </div>
+</div>
+
+</body>
+</html>

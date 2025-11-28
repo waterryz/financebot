@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ — Статистика</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+{% include "admin_sidebar.html" %}
+
+<div class="admin-content">
+
+    <div class="admin-card">
+        <h1 class="admin-title">Статистика системы</h1>
+
+        <!-- KPI Блоки -->
+        <div class="kpi-row">
+            <div class="kpi-card">
+                <h3>Пользователей</h3>
+                <p>{{ total_users }}</p>
+            </div>
+
+            <div class="kpi-card">
+                <h3>Транзакций</h3>
+                <p>{{ total_transactions }}</p>
+            </div>
+
+            <div class="kpi-card">
+                <h3>Доходов всего</h3>
+                <p>{{ total_income }}</p>
+            </div>
+
+            <div class="kpi-card">
+                <h3>Расходов всего</h3>
+                <p>{{ total_expenses }}</p>
+            </div>
+        </div>
+
+        <!-- Диаграмма расходов по типам -->
+        <h2 style="text-align:center;margin-top:30px;">Распределение расходов</h2>
+        <canvas id="expensePie" height="150"></canvas>
+
+        <!-- Линейный график -->
+        <h2 style="text-align:center;margin-top:40px;">Динамика доходов и расходов</h2>
+        <canvas id="lineChart" height="150"></canvas>
+    </div>
+
+</div>
+
+<script>
+    // =============== Pie Chart (категории расходов) ===============
+    const pieCtx = document.getElementById('expensePie');
+
+    new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: {{ category_names | safe }},
+            datasets: [{
+                data: {{ category_values | safe }},
+                backgroundColor: [
+                    '#4b78ff', '#ff6384', '#ffcd56', '#4bc0c0', '#9966ff', '#36a2eb'
+                ]
+            }]
+        }
+    });
+
+    // =============== Line Chart (динамика) ===============
+    const lineCtx = document.getElementById('lineChart');
+
+    new Chart(lineCtx, {
+        type: 'line',
+        data: {
+            labels: {{ timeline_dates | safe }},
+            datasets: [
+                {
+                    label: 'Доходы',
+                    data: {{ timeline_income | safe }},
+                    borderColor: '#4bc0c0',
+                    borderWidth: 3
+                },
+                {
+                    label: 'Расходы',
+                    data: {{ timeline_expense | safe }},
+                    borderColor: '#ff6384',
+                    borderWidth: 3
+                }
+            ]
+        }
+    });
+</script>
+
+</body>
+</html>

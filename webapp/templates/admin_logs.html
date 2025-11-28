@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ — Логи</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+{% include "admin_sidebar.html" %}
+
+<div class="admin-content">
+    <div class="admin-card">
+        <h1 class="admin-title">Логи</h1>
+
+        <div class="logs-box">
+            {% for line in logs %}
+                <pre>{{ line }}</pre>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

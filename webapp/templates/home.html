@@ -5,16 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Главная</title>
     <link rel="stylesheet" href="/static/style.css">
-
     <script>
         function toggleSidebar() {
             document.getElementById("sidebar").classList.toggle("open");
         }
     </script>
 </head>
+<div class="top-profile">
+    <div class="profile-icon" onclick="toggleProfileMenu()">👤</div>
+
+    <div class="profile-menu" id="profileMenu">
+        <a href="/profile?token={{ token }}">👤 Профиль</a>
+        <a href="/settings?token={{ token }}">⚙ Настройки</a>
+        <a href="/login">🚪 Выйти</a>
+    </div>
+</div>
+
+<script>
+function toggleProfileMenu() {
+    document.getElementById("profileMenu").classList.toggle("open");
+}
+</script>
+
 <body>
 
-<!-- Сайдбар -->
+<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-tab" onclick="toggleSidebar()">☰</div>
 
@@ -23,27 +38,86 @@
         <a href="/add_expense?token={{ token }}">➖ Добавить расход</a>
         <a href="/add_income?token={{ token }}">➕ Добавить доход</a>
         <a href="/history?token={{ token }}">📜 История</a>
+        <a href="/goals?token={{ token }}">🎯 Цели</a>
+
         <a href="/wishlist?token={{ token }}">🕒 Отложенные покупки</a>
         <a href="/stats?token={{ token }}">📊 Статистика</a>
-        <a href="/profile?token={{ token }}">👤 Профиль</a>
-        <a href="/login">🚪 Выйти</a>
+
     </div>
 </div>
 
-<!-- Контент -->
-<div class="home-content">
+<!-- MAIN CARD -->
+<div class="auth-card">
+    <h1>Здравствуйте, {{ username }}!</h1>
+    <p style="font-size:18px;">Ваш текущий баланс:</p>
 
-    <!-- КАРТОЧКА БАЛАНСА -->
-    <div class="balance-card">
-        <p class="balance-title">Баланс</p>
-        <p class="balance-value">{{ balance }} ₸</p>
+    <div class="balance-box">
+        <span>{{ balance }} ₸</span>
     </div>
 
-    <!-- ВКЛАДКИ -->
-    <div class="home-tabs">
-        <a href="/add_income?token={{ token }}" class="tab-btn">➕ Доход</a>
-        <a href="/add_expense?token={{ token }}" class="tab-btn">➖ Расход</a>
-        <a href="/history?token={{ token }}" class="tab-btn">📜 История</a>
+    <div class="home-buttons">
+        <a href="/add_expense?token={{ token }}" class="home-btn red">➖ Расход</a>
+        <a href="/add_income?token={{ token }}" class="home-btn green">➕ Доход</a>
+        <a href="/history?token={{ token }}" class="home-btn blue">📜 История</a>
+    </div>
+</div>
+
+<!-- EXTRA BLOCKS -->
+<div class="home-extra">
+
+    <!-- 1. Итоги месяца -->
+    <div class="extra-card">
+        <h3>📅 Итоги месяца</h3>
+        <p><b>Доход:</b> {{ month_income }} ₸</p>
+        <p><b>Расход:</b> {{ month_expense }} ₸</p>
+        <p><b>Баланс:</b> {{ month_balance }} ₸</p>
+    </div>
+
+    <!-- 2. Топ категории -->
+    <div class="extra-card">
+        <h3>🔥 Топ категории</h3>
+        {% if top_categories %}
+            {% for cat, amount in top_categories %}
+                <p><b>{{ cat }}</b> — {{ amount }} ₸</p>
+            {% endfor %}
+        {% else %}
+            <p>Нет данных</p>
+        {% endif %}
+    </div>
+
+    <!-- 3. Последняя транзакция -->
+    <div class="extra-card">
+        <h3>📌 Последняя транзакция</h3>
+        {% if last_transaction %}
+            <p><b>{{ last_transaction.category }}</b></p>
+            <p>{{ last_transaction.description }}</p>
+            <p>{{ last_transaction.amount }} ₸</p>
+            <p class="extra-date">{{ last_transaction.date }}</p>
+        {% else %}
+            <p>Пока пусто</p>
+        {% endif %}
+    </div>
+
+    <!-- 4. Цель / Прогресс -->
+    <div class="extra-card">
+        <h3>🎯 Цель</h3>
+
+        {% if goal %}
+            <p><b>{{ goal.name }}</b></p>
+            <p>{{ goal.saved }} / {{ goal.target }} ₸</p>
+
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ goal.percent }}%;"></div>
+            </div>
+
+        {% else %}
+            <p>Цель не задана</p>
+
+            <div class="goal-add-wrapper">
+                <a href="/add_goal?token={{ token }}" class="goal-btn">➕ Добавить цель</a>
+            </div>
+
+        {% endif %}
     </div>
 
 </div>

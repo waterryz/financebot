@@ -11,6 +11,22 @@
         }
     </script>
 </head>
+<div class="top-profile">
+    <div class="profile-icon" onclick="toggleProfileMenu()">👤</div>
+
+    <div class="profile-menu" id="profileMenu">
+        <a href="/profile?token={{ token }}">👤 Профиль</a>
+        <a href="/settings?token={{ token }}">⚙ Настройки</a>
+        <a href="/login">🚪 Выйти</a>
+    </div>
+</div>
+
+<script>
+function toggleProfileMenu() {
+    document.getElementById("profileMenu").classList.toggle("open");
+}
+</script>
+
 <body>
 <div class="sidebar" id="sidebar">
 
@@ -26,8 +42,6 @@
         <a href="/wishlist?token={{ token }}">🕒 Отложенные покупки</a>
 
         <a href="/stats?token={{ token }}">📊 Статистика</a>
-        <a href="/profile?token={{ token }}">👤 Профиль</a>
-        <a href="/login">🚪 Выйти</a>
     </div>
 
 </div>

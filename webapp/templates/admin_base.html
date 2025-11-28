@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+        }
+    </script>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+
+    <div class="sidebar-tab" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        ☰
+    </div>
+
+    <div class="sidebar-content">
+
+        <h3 style="padding-left:15px; color:#4b78ff;">Админ</h3>
+
+        <a href="/admin?admin={{ admin_name }}">🏠 Главная</a>
+        <a href="/admin/users?admin={{ admin_name }}">👥 Пользователи</a>
+        <a href="/admin/transactions?admin={{ admin_name }}">💸 Транзакции</a>
+        <a href="/admin/stats?admin={{ admin_name }}">📊 Статистика</a>
+        <a href="/admin/logs?admin={{ admin_name }}">❗ Логи</a>
+
+        <h3 style="padding-left:15px;margin-top:20px;">Пользователь</h3>
+        <a href="/login">🚪 Выйти</a>
+    </div>
+</div>
+
+
+<!-- CONTENT -->
+<div class="auth-card">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

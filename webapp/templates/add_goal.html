@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Добавить желание</title>
+    <title>Новая цель</title>
     <link rel="stylesheet" href="/static/style.css">
+
     <script>
         function toggleSidebar() {
             document.getElementById("sidebar").classList.toggle("open");
@@ -29,58 +30,49 @@ function toggleProfileMenu() {
 
 <body>
 
+<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-
-    <div class="sidebar-tab" onclick="toggleSidebar()">
-        ☰
-    </div>
+    <div class="sidebar-tab" onclick="toggleSidebar()">☰</div>
 
     <div class="sidebar-content">
         <a href="/home?token={{ token }}">🏠 Главная</a>
         <a href="/add_expense?token={{ token }}">➖ Добавить расход</a>
         <a href="/add_income?token={{ token }}">➕ Добавить доход</a>
         <a href="/history?token={{ token }}">📜 История</a>
-        <a href="/goals?token={{ token }}">🎯 Цели</a>
-
-        <a href="/stats?token={{ token }}">📊 Статистика</a>
-
-        <!-- Новая функция -->
         <a href="/wishlist?token={{ token }}">🕒 Отложенные покупки</a>
-
-
+        <a href="/goals?token={{ token }}">🎯 Цели</a>
+        <a href="/stats?token={{ token }}">📊 Статистика</a>
     </div>
-
 </div>
 
-<div class="auth-card">
-    <h1>Добавить желание</h1>
+<!-- PAGE CONTENT -->
+<div class="add-wish-card">
+    <h1>Добавить цель</h1>
 
     <form method="post">
+        <input
+            type="text"
+            name="name"
+            placeholder="Название цели"
+            required
+        >
 
-        <label>Название покупки:</label>
-        <input type="text" name="item" required class="input-field">
+        <input
+            type="number"
+            name="target"
+            placeholder="Сумма (₸)"
+            step="0.01"
+            required
+        >
 
-        <label>Цена (необязательно):</label>
-        <input type="number" step="0.01" name="price" class="input-field">
-
-        <label>Напомнить через:</label>
-
-            <div class="remind-box">
-             <input type="number" name="amount" value="3" min="1" class="remind-number">
-
-             <select name="unit" class="remind-unit">
-                    <option value="minutes">минут</option>
-                    <option value="hours">часов</option>
-                    <option value="days" selected>дней</option>
-              </select>
-            </div>
-
-
-
-        <button type="submit" class="profile-btn">Добавить</button>
-
+        <button class="add-wish-btn">Сохранить</button>
     </form>
 
+    <a href="/home?token={{ token }}"
+       class="goal-btn"
+       style="margin-top:15px; display:block; text-align:center;">
+        ⬅ Назад
+    </a>
 </div>
 
 </body>
