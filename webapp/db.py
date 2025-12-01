@@ -4,22 +4,18 @@ import bcrypt
 from datetime import datetime, timedelta
 
 
-# ======================
-# CONNECT
-# ======================
+
 def get_conn():
     return psycopg2.connect(
         host="localhost",
         database="finance_bot",
         user="postgres",
-        password="Twolfsasha1",
+        password="0120",
         port=5432
     )
 
 
-# ======================
-# USERS
-# ======================
+
 
 def create_user(username, password):
     conn = get_conn()

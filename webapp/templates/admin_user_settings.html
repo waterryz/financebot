@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройки пользователя</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+    <style>
+        .user-info-box {
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .user-actions button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .danger {
+            background: #ff4b4b !important;
+        }
+
+        .danger:hover {
+            background: #e63b3b !important;
+        }
+    </style>
+</head>
+<body>
+
+{% include "admin_sidebar.html" %}
+
+<div class="admin-content">
+    <div class="admin-card">
+
+        <h1 class="admin-title">Настройки пользователя</h1>
+
+        <div class="user-info-box">
+            <p><b>ID:</b> {{ user.id }}</p>
+            <p><b>Логин:</b> {{ user.username }}</p>
+            <p><b>Дата регистрации:</b> {{ user.created_at }}</p>
+            <p><b>Количество транзакций:</b> {{ transactions_count }}</p>
+        </div>
+
+        <h2 class="admin-subtitle">Действия</h2>
+
+        <div class="user-actions">
+            <a href="/admin/user/{{ user.id }}/edit?admin={{ admin_name }}">
+                <button class="settings-btn">✏ Изменить логин</button>
+            </a>
+
+            <a href="/admin/user/{{ user.id }}/reset_password?admin={{ admin_name }}">
+                <button class="settings-btn">🔑 Сбросить пароль</button>
+            </a>
+
+            <a href="/admin/user/{{ user.id }}/transactions?admin={{ admin_name }}">
+                <button class="settings-btn">📄 Посмотреть транзакции</button>
+            </a>
+
+            <a href="/admin/user/{{ user.id }}/delete?admin={{ admin_name }}">
+                <button class="settings-btn danger">🗑 Удалить пользователя</button>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

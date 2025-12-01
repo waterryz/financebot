@@ -936,3 +936,287 @@ body {
     color: #6a5acd;
 }
 
+/* Красивая админ кнопка */
+.settings-btn {
+    padding: 10px 15px;
+    background: #4b67ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.settings-btn:hover {
+    background: #354bff;
+}
+
+/* Карточка */
+.admin-card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.08);
+}
+
+/* Заголовки */
+.admin-title {
+    margin-bottom: 20px;
+}
+
+.admin-subtitle {
+    margin: 15px 0;
+}
+
+/* Контент */
+.admin-content {
+    margin-left: 240px; /* чтобы не налезало на сайдбар */
+    padding: 30px;
+}
+/* Контейнер для всех кнопок */
+.user-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Основной стиль кнопок */
+.settings-btn {
+    width: 100%;
+    padding: 18px 20px;
+    font-size: 22px;
+    font-weight: 500;
+    border: none;
+    border-radius: 14px;
+
+    background: #5a6bff;
+    color: white;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+
+    transition: 0.25s ease;
+}
+
+/* Анимация при наведении */
+.settings-btn:hover {
+    background: #4957e9;
+    transform: translateY(-2px);
+}
+
+/* Кнопка удаления */
+.settings-btn.danger {
+    background: #e4544e;
+}
+
+.settings-btn.danger:hover {
+    background: #cb3f3a;
+}
+.user-info-box {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.user-info-box p {
+    font-size: 18px;
+    margin: 6px 0;
+}
+.admin-content {
+    margin-left: 240px;
+    padding: 30px;
+}
+.admin-table a {
+    text-decoration: none !important;
+}
+.settings-btn {
+    text-decoration: none !important;
+}
+a {
+    text-decoration: none;
+}
+/* Контейнер всей страницы */
+.admin-content {
+    margin-left: 240px;
+    padding: 30px;
+}
+
+/* Карточка формы */
+.admin-card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    max-width: 450px;
+}
+
+/* Заголовок */
+.admin-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* Поля ввода */
+.form-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-top: 6px;
+    margin-bottom: 20px;
+}
+
+/* Кнопка сохранить */
+.save-btn {
+    width: 100%;
+    background: #4b67ff;
+    color: white;
+    border: none;
+    padding: 14px;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.save-btn:hover {
+    background: #354bff;
+    transform: translateY(-2px);
+}
+/* Контент админки — общий */
+.admin-content {
+    margin-left: 240px;
+    padding: 35px;
+}
+
+/* Карточка */
+.admin-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    max-width: 500px;
+}
+
+/* Заголовок */
+.admin-title {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* Метки формы */
+.admin-label {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* Поля формы */
+.admin-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 17px;
+    border-radius: 10px;
+    border: 1px solid #c6c6c6;
+    margin-top: 8px;
+    margin-bottom: 20px;
+    transition: .2s;
+}
+
+.admin-input:focus {
+    border-color: #4c5cff;
+    outline: none;
+}
+
+/* Кнопка сохранить */
+.save-btn {
+    width: 100%;
+    background: #4b67ff;
+    color: #fff;
+    padding: 14px;
+    font-size: 18px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.save-btn:hover {
+    background: #354bff;
+    transform: translateY(-2px);
+}
+/* Табличный контейнер */
+.admin-table-box {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+}
+
+/* Таблица */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+/* Заголовки */
+.admin-table th {
+    background: #eef0ff;
+    padding: 14px;
+    font-size: 17px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+}
+
+/* Ячейки */
+.admin-table td {
+    padding: 14px;
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Чередование строк */
+.admin-table tr:nth-child(even) {
+    background: #fafaff;
+}
+
+/* Выделение строки при наведении */
+.admin-table tr:hover {
+    background: #eceeff;
+}
+
+/* Текстовые столбцы */
+.tx-income {
+    color: #27ae60;
+    font-weight: 600;
+}
+
+.tx-expense {
+    color: #e74c3c;
+    font-weight: 600;
+}
+.reset-text {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.new-pass-box {
+    font-size: 26px;
+    font-weight: 700;
+    background: #f0f2ff;
+    padding: 15px 25px;
+    border-radius: 10px;
+    border: 1px solid #d5d9ff;
+    display: inline-block;
+    margin-bottom: 15px;
+}

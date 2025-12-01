@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Транзакции пользователя</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+{% include "admin_sidebar.html" %}
+
+<div class="admin-content">
+
+    <div class="admin-card" style="max-width: 1100px;">
+        <h1 class="admin-title">Транзакции пользователя #{{ user_id }}</h1>
+
+        <table class="admin-table">
+            <tr>
+                <th>Сумма</th>
+                <th>Тип</th>
+                <th>Категория</th>
+                <th>Описание</th>
+                <th>Дата</th>
+            </tr>
+
+            {% for t in transactions %}
+            <tr>
+                <td>{{ t[0] }}</td>
+
+                <td class="{% if t[1] == 'income' %}tx-income{% else %}tx-expense{% endif %}">
+                    {{ t[1] }}
+                </td>
+
+                <td>{{ t[2] }}</td>
+                <td>{{ t[3] }}</td>
+                <td>{{ t[4] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+</div>
+
+</body>
+</html>

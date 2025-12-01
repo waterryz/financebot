@@ -648,3 +648,192 @@ def goal_edit(request: Request, token: str, id: int, name: str = Form(...), targ
     update_goal(id, user_id, name, target)
     return RedirectResponse(f"/goals?token={token}", status_code=302)
 
+from webapp.db import get_username_by_id, get_transactions, get_conn, delete_user
+
+
+@app.get("/admin/user/{user_id}", response_class=HTMLResponse)
+def admin_user_page(request: Request, admin: str, user_id: int):
+    if not is_admin_name(admin):
+        return RedirectResponse("/admin/login")
+
+    conn = get_conn()
+    cur = conn.cursor()
+
+    # Информация о пользователе
+    cur.execute("SELECT id, username, created_at FROM users WHERE id=%s", (user_id,))
+    row = cur.fetchone()
+
+    if not row:
+        return HTMLResponse("<h1>Пользователь не найден</h1>", status_code=404)
+
+    user = {
+        "id": row[0],
+        "username": row[1],
+        "created_at": row[2]
+    }
+
+    # Количество транзакций
+    cur.execute("SELECT COUNT(*) FROM transactions WHERE user_id=%s", (user_id,))
+    tx_count = cur.fetchone()[0]
+
+    conn.close()
+
+    return templates.TemplateResponse("admin_user_settings.html", {
+        "request": request,
+        "admin_name": admin,
+        "user": user,
+        "transactions_count": tx_count
+    })
+@app.get("/admin/user/{user_id}/edit", response_class=HTMLResponse)
+def admin_edit_user_page(request: Request, admin: str, user_id: int):
+    if not is_admin_name(admin):
+        return RedirectResponse("/admin/login")
+
+    username = get_username_by_id(user_id)
+
+    return templates.TemplateResponse("admin_edit_user.html", {
+        "request": request,
+        "admin_name": admin,
+        "user_id": user_id,
+        "username": username
+    })
+
+
+@app.post("/admin/user/{user_id}/edit")
+def admin_edit_user(request: Request, admin: str, user_id: int, new_username: str = Form(...)):
+    if not is_admin_name(admin):
+        return RedirectResponse("/admin/login")
+
+    ok = update_username(user_id, new_username)
+
+    if not ok:
+        return HTMLResponse("<h1>Ошибка: логин уже занят</h1>")
+
+    return RedirectResponse(f"/admin/user/{user_id}?admin={admin}", status_code=302)
+@app.get("/admin/user/{user_id}/delete")
+def admin_delete_user(admin: str, user_id: int):
+    if not is_admin_name(admin):
+        return RedirectResponse("/admin/login")
+
+    delete_user(user_id)
+
+    return RedirectResponse(f"/admin/users?admin={admin}", status_code=302)
+@app.get("/admin/user/{user_id}/transactions", response_class=HTMLResponse)
+def admin_user_transactions(request: Request, admin: str, user_id: int):
+    if not is_admin_name(admin):
+        return RedirectResponse("/admin/login")
+
+    tx = get_transactions(user_id)
+
+    return templates.TemplateResponse("admin_user_transactions.html", {
+        "request": request,
+        "admin_name": admin,
+        "transactions": tx,
+        "user_id": user_id
+    })
+@app.get("/admin/user/{user_id}", response_class=HTMLResponse)
+def admin_user_page(request: Request, admin: str, user_id: int):
+    if not is_admin_name(admin):
+        return RedirectResponse("/admin/login")
+
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("SELECT id, username, created_at FROM users WHERE id=%s", (user_id,))
+    row = cur.fetchone()
+
+    if not row:
+        return HTMLResponse("<h1>Пользователь не найден</h1>", status_code=404)
+
+    user = {"id": row[0], "username": row[1], "created_at": row[2]}
+
+    cur.execute("SELECT COUNT(*) FROM transactions WHERE user_id=%s", (user_id,))
+    tx_count = cur.fetchone()[0]
+
+    conn.close()
+
+    return templates.TemplateResponse(
+        "admin_user_settings.html",
+        {
+            "request": request,
+            "admin_name": admin,
+            "user": user,
+            "transactions_count": tx_count
+        }
+    )
+@app.get("/admin/user/{user_id}/edit", response_class=HTMLResponse)
+def admin_edit_user_page(request: Request, admin: str, user_id: int):
+    if not is_admin_name(admin):
+        return RedirectResponse("/admin/login")
+
+    username = get_username_by_id(user_id)
+
+    return templates.TemplateResponse("admin_edit_user.html", {
+        "request": request,
+        "admin_name": admin,
+        "user_id": user_id,
+        "username": username
+    })
+
+
+@app.post("/admin/user/{user_id}/edit")
+def admin_edit_user(request: Request, admin: str, user_id: int, new_username: str = Form(...)):
+    if not is_admin_name(admin):
+        return RedirectResponse("/admin/login")
+
+    ok = update_username(user_id, new_username)
+
+    if not ok:
+        return HTMLResponse("<h1>Ошибка: логин уже занят</h1>")
+
+    return RedirectResponse(f"/admin/user/{user_id}?admin={admin}", status_code=302)
+@app.get("/admin/user/{user_id}/reset_password", response_class=HTMLResponse)
+def admin_reset_pass(request: Request, admin: str, user_id: int):
+    if not is_admin_name(admin):
+        return RedirectResponse("/admin/login")
+
+    new_password = "123456"
+
+    conn = get_conn()
+    cur = conn.cursor()
+    import bcrypt
+
+    new_hash = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
+    cur.execute("UPDATE users SET password_hash=%s WHERE id=%s", (new_hash, user_id))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    username = get_username_by_id(user_id)
+
+    return templates.TemplateResponse("admin_password_reset.html", {
+        "request": request,
+        "admin_name": admin,
+        "user_id": user_id,
+        "username": username,
+        "new_password": new_password
+    })
+
+
+    return HTMLResponse(f"<h1>Пароль сброшен. Новый пароль: {new_password}</h1>")
+@app.get("/admin/user/{user_id}/transactions", response_class=HTMLResponse)
+def admin_user_transactions(request: Request, admin: str, user_id: int):
+    if not is_admin_name(admin):
+        return RedirectResponse("/admin/login")
+
+    tx = get_transactions(user_id)  # список ТРАНЗАКЦИЙ из db.py
+
+    return templates.TemplateResponse("admin_user_transactions.html", {
+        "request": request,
+        "admin_name": admin,
+        "transactions": tx,
+        "user_id": user_id
+    })
+@app.get("/admin/user/{user_id}/delete")
+def admin_delete_user(admin: str, user_id: int):
+    if not is_admin_name(admin):
+        return RedirectResponse("/admin/login")
+
+    delete_user(user_id)
+
+    return RedirectResponse(f"/admin/users?admin={admin}", status_code=302)

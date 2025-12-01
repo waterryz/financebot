@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изменить логин</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+{% include "admin_sidebar.html" %}
+
+<div class="admin-content">
+    <div class="admin-card">
+
+        <h1 class="admin-title">Изменить логин пользователя {{ username }}</h1>
+
+        <form action="/admin/user/{{ user_id }}/edit?admin={{ admin_name }}" method="post">
+
+            <label class="admin-label">Новый логин:</label>
+            <input class="admin-input" type="text" name="new_username" required>
+
+            <button class="save-btn" type="submit">Сохранить</button>
+
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>
