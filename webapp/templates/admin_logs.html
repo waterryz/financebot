@@ -1,26 +1,15 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ — Логи</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
+{% extends "admin_layout.html" %}
 
-{% include "admin_sidebar.html" %}
+{% block content %}
 
-<div class="admin-content">
-    <div class="admin-card">
-        <h1 class="admin-title">Логи</h1>
+<h1 class="text-3xl font-bold mb-6">📜 Логи системы</h1>
 
-        <div class="logs-box">
-            {% for line in logs %}
-                <pre>{{ line }}</pre>
-            {% endfor %}
-        </div>
-    </div>
+<div class="bg-slate-900/70 p-4 rounded-2xl border border-white/10 shadow">
+
+    <pre class="text-sm text-slate-300 whitespace-pre-wrap">
+{{ logs|join('\n') }}
+    </pre>
+
 </div>
 
-</body>
-</html>
+{% endblock %}

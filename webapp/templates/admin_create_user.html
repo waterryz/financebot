@@ -1,0 +1,31 @@
+{% extends "admin_layout.html" %}
+{% block content %}
+
+<h1 class="text-3xl font-bold mb-6">➕ Создать нового пользователя</h1>
+
+<div class="bg-slate-900/70 p-6 rounded-2xl border border-white/10 max-w-lg mx-auto">
+
+    <form action="/admin/create_user?token={{ token }}" method="post" class="space-y-4">
+
+        <div>
+            <label class="text-sm text-slate-400">Логин</label>
+            <input type="text" name="username"
+                   class="w-full mt-1 bg-slate-800 border border-white/10 rounded-lg p-3 text-white"
+                   required>
+        </div>
+
+        <div>
+            <label class="text-sm text-slate-400">Пароль</label>
+            <input type="password" name="password"
+                   class="w-full mt-1 bg-slate-800 border border-white/10 rounded-lg p-3 text-white"
+                   required>
+        </div>
+
+        <button class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-lg">
+            Создать
+        </button>
+    </form>
+
+</div>
+
+{% endblock %}

@@ -1,89 +1,41 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>История операций</title>
-    <link rel="stylesheet" href="/static/style.css">
+{% extends "layout.html" %}
+{% block content %}
+<h1 class="text-3xl font-semibold text-center mb-8 flex items-center gap-3 justify-center">
+    📜 История транзакций
+</h1>
 
-    <script>
-        function toggleSidebar() {
-            document.getElementById("sidebar").classList.toggle("open");
-        }
-    </script>
-</head>
-<div class="top-profile">
-    <div class="profile-icon" onclick="toggleProfileMenu()">👤</div>
+<div class="space-y-8 pb-20">
+    {% set current_date = None %}
 
-    <div class="profile-menu" id="profileMenu">
-        <a href="/profile?token={{ token }}">👤 Профиль</a>
-        <a href="/settings?token={{ token }}">⚙ Настройки</a>
-        <a href="/login">🚪 Выйти</a>
-    </div>
-</div>
+    {% for t in transactions %}
+        {% set date = t.date.split(" ")[0] %}
 
-<script>
-function toggleProfileMenu() {
-    document.getElementById("profileMenu").classList.toggle("open");
-}
-</script>
+        {% if current_date != date %}
+            <p class="text-slate-400 text-sm font-semibold">{{ date }}</p>
+            {% set current_date = date %}
+        {% endif %}
 
-<body>
+        <div class="rounded-2xl bg-slate-900/80 border border-white/10 p-4
+                    shadow-lg shadow-black/40 backdrop-blur-xl hover:bg-slate-800/70 transition">
 
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-
-    <div class="sidebar-tab" onclick="toggleSidebar()">
-        ☰
-    </div>
-
-    <div class="sidebar-content">
-        <a href="/home?token={{ token }}">🏠 Главная</a>
-        <a href="/add_expense?token={{ token }}">➖ Добавить расход</a>
-        <a href="/add_income?token={{ token }}">➕ Добавить доход</a>
-        <a href="/history?token={{ token }}">📜 История</a>
-        <a href="/goals?token={{ token }}">🎯 Цели</a>
-
-        <a href="/stats?token={{ token }}">📊 Статистика</a>
-        <a href="/wishlist?token={{ token }}">⏳ Отложенные покупки</a>
-
-    </div>
-
-</div>
-
-
-<div class="history-container">
-
-    <h1 class="history-title">История операций</h1>
-
-    {% if not items %}
-        <p class="no-history">История пуста 😐</p>
-    {% else %}
-        {% for item in items %}
-        <div class="history-item">
-
-            <div class="item-left">
-
-                <div class="item-cat">{{ item[2] }}</div>
-
-                {% if item[3] %}
-                    <div class="item-desc">{{ item[3] }}</div>
-                {% endif %}
-
-                <div class="item-date">
-                    {{ item[4].strftime("%d.%m %H:%M") }}
+            <div class="flex items-center justify-between">
+                <div class="flex items-start gap-3">
+                    {% if t.type == 'income' %}
+                        <div class="text-emerald-400 text-xl">📈</div>
+                    {% else %}
+                        <div class="text-rose-400 text-xl">📉</div>
+                    {% endif %}
+                    <div>
+                        <p class="font-medium">{{ t.description }}</p>
+                        <p class="text-xs text-slate-400">{{ t.category }} • {{ t.date.split(" ")[1] }}</p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="item-right {{ 'inc' if item[1] == 'income' else 'exp' }}">
-                {{ '+' if item[1] == 'income' else '-' }}{{ item[0] }} ₸
+                <p class="text-lg font-bold {% if t.type == 'income' %}text-emerald-400{% else %}text-rose-400{% endif %}">
+                    {{ t.amount }} ₸
+                </p>
             </div>
-
         </div>
-        {% endfor %}
-    {% endif %}
-
+    {% endfor %}
 </div>
-
-</body>
-</html>
+{% endblock %}

@@ -1,79 +1,30 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Новая цель</title>
-    <link rel="stylesheet" href="/static/style.css">
+{% extends "layout.html" %}
+{% block content %}
 
-    <script>
-        function toggleSidebar() {
-            document.getElementById("sidebar").classList.toggle("open");
-        }
-    </script>
-</head>
-<div class="top-profile">
-    <div class="profile-icon" onclick="toggleProfileMenu()">👤</div>
+<h1 class="text-3xl font-semibold text-center mb-8">🎯 Создать цель</h1>
 
-    <div class="profile-menu" id="profileMenu">
-        <a href="/profile?token={{ token }}">👤 Профиль</a>
-        <a href="/settings?token={{ token }}">⚙ Настройки</a>
-        <a href="/login">🚪 Выйти</a>
+<form method="post"
+      class="bg-slate-900/60 border border-white/10 rounded-2xl p-6 shadow-xl shadow-black/40 backdrop-blur-xl
+             max-w-2xl mx-auto space-y-6 fade">
+
+    <div>
+        <label class="block mb-1 text-sm text-slate-300">Название</label>
+        <input name="name" required
+               class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-white/10 text-slate-100
+                      focus:outline-none focus:border-indigo-400">
     </div>
-</div>
 
-<script>
-function toggleProfileMenu() {
-    document.getElementById("profileMenu").classList.toggle("open");
-}
-</script>
-
-<body>
-
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-tab" onclick="toggleSidebar()">☰</div>
-
-    <div class="sidebar-content">
-        <a href="/home?token={{ token }}">🏠 Главная</a>
-        <a href="/add_expense?token={{ token }}">➖ Добавить расход</a>
-        <a href="/add_income?token={{ token }}">➕ Добавить доход</a>
-        <a href="/history?token={{ token }}">📜 История</a>
-        <a href="/wishlist?token={{ token }}">🕒 Отложенные покупки</a>
-        <a href="/goals?token={{ token }}">🎯 Цели</a>
-        <a href="/stats?token={{ token }}">📊 Статистика</a>
+    <div>
+        <label class="block mb-1 text-sm text-slate-300">Цель (₸)</label>
+        <input name="target" type="number" required
+               class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-white/10 text-slate-100
+                      focus:outline-none focus:border-indigo-400">
     </div>
-</div>
 
-<!-- PAGE CONTENT -->
-<div class="add-wish-card">
-    <h1>Добавить цель</h1>
+    <button class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-lg font-semibold transition">
+        Создать
+    </button>
 
-    <form method="post">
-        <input
-            type="text"
-            name="name"
-            placeholder="Название цели"
-            required
-        >
+</form>
 
-        <input
-            type="number"
-            name="target"
-            placeholder="Сумма (₸)"
-            step="0.01"
-            required
-        >
-
-        <button class="add-wish-btn">Сохранить</button>
-    </form>
-
-    <a href="/home?token={{ token }}"
-       class="goal-btn"
-       style="margin-top:15px; display:block; text-align:center;">
-        ⬅ Назад
-    </a>
-</div>
-
-</body>
-</html>
+{% endblock %}

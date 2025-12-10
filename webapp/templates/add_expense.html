@@ -1,76 +1,48 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Добавить расход</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <script>
-        function toggleSidebar() {
-            document.getElementById("sidebar").classList.toggle("open");
-        }
-    </script>
+{% extends "layout.html" %}
+{% block content %}
 
-</head>
-<div class="top-profile">
-    <div class="profile-icon" onclick="toggleProfileMenu()">👤</div>
+<h1 class="text-3xl font-semibold mb-8 text-center flex items-center justify-center gap-2">
+    ➖ Добавить расход
+</h1>
 
-    <div class="profile-menu" id="profileMenu">
-        <a href="/profile?token={{ token }}">👤 Профиль</a>
-        <a href="/settings?token={{ token }}">⚙ Настройки</a>
-        <a href="/login">🚪 Выйти</a>
-    </div>
-</div>
+<form method="post"
+      class="bg-slate-900/60 border border-white/10 rounded-2xl p-6 shadow-xl shadow-black/40 backdrop-blur-xl
+             max-w-2xl mx-auto space-y-6 fade">
 
-<script>
-function toggleProfileMenu() {
-    document.getElementById("profileMenu").classList.toggle("open");
-}
-</script>
-
-<body>
-<!-- ЛЕВАЯ ВЫЕЗЖАЮЩАЯ ВКЛАДКА -->
-<div class="sidebar" id="sidebar">s
-
-    <div class="sidebar-tab" onclick="toggleSidebar()">
-        ☰
+    <div>
+        <label class="block mb-1 text-sm text-slate-300">Сумма (₸)</label>
+        <input name="amount" type="number" step="0.01" required
+               class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-white/10
+                      text-slate-100 focus:outline-none focus:border-rose-400">
     </div>
 
-    <div class="sidebar-content">
-        <a href="/home?token={{ token }}">🏠 Главная</a>
-        <a href="/add_expense?token={{ token }}">➖ Добавить расход</a>
-        <a href="/add_income?token={{ token }}">➕ Добавить доход</a>
-        <a href="/history?token={{ token }}">📜 История</a>
-        <a href="/wishlist?token={{ token }}">🕒 Отложенные покупки</a>
-        <a href="/goals?token={{ token }}">🎯 Цели</a>
-        <a href="/stats?token={{ token }}">📊 Статистика</a>
-    </div>
+    <div>
+        <label class="block mb-1 text-sm text-slate-300">Категория</label>
 
-</div>
-
-
-<div class="auth-card">
-    <h1>Добавить расход</h1>
-
-    <form method="post">
-        <input type="number" step="0.01" name="amount" placeholder="Сумма" required>
-
-        <select name="category_id" class="select-input">
-            {% for cat in categories %}
-            <option value="{{ cat[0] }}">{{ cat[1] }}</option>
+        {% if categories %}
+        <select name="category_id"
+                class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-white/10 text-slate-100
+                       focus:outline-none focus:border-rose-400">
+            {% for c in categories %}
+                <option value="{{ c.id }}">{{ c.name }}</option>
             {% endfor %}
         </select>
+        {% else %}
+        <p class="text-rose-400 text-sm">Нет категорий — добавь в профиле</p>
+        {% endif %}
+    </div>
 
-        <input type="text" name="description" placeholder="Описание (необязательно)">
+    <div>
+        <label class="block mb-1 text-sm text-slate-300">Описание (необязательно)</label>
+        <input name="description" type="text"
+               class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-white/10
+                      text-slate-100 focus:outline-none focus:border-rose-400">
+    </div>
 
-        <button class="auth-btn" type="submit">Добавить</button>
-    </form>
+    <button class="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-lg font-semibold transition">
+        Добавить расход
+    </button>
 
-    <p class="auth-link">
-        <a href="/home?token={{ token }}">Назад</a>
-    </p>
+</form>
 
-</div>
-
-</body>
-</html>
+{% endblock %}

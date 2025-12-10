@@ -1,41 +1,35 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ — Транзакции</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
+{% extends "admin_layout.html" %}
 
-{% include "admin_sidebar.html" %}
+{% block content %}
+<h1 class="text-3xl font-bold mb-6">💸 Все транзакции</h1>
 
-<div class="admin-content">
-    <div class="admin-card">
-        <h1 class="admin-title">Транзакции</h1>
+<div class="bg-slate-900/70 rounded-2xl border border-white/10 p-4 shadow">
 
-        <table class="admin-table">
-            <tr>
-                <th>ID</th>
-                <th>Пользователь</th>
-                <th>Тип</th>
-                <th>Сумма</th>
-                <th>Дата</th>
-            </tr>
+    <table class="w-full text-sm">
+        <tr class="text-slate-400 border-b border-white/10">
+            <th class="text-left py-2">ID</th>
+            <th class="text-left py-2">Пользователь</th>
+            <th class="text-left py-2">Тип</th>
+            <th class="text-left py-2">Сумма</th>
+            <th class="text-left py-2">Дата</th>
+        </tr>
 
-            {% for t in transactions %}
-            <tr>
-                <td>{{ t.id }}</td>
-                <td>{{ t.username }}</td>
-                <td>{{ t.type }}</td>
-                <td>{{ t.amount }}</td>
-                <td>{{ t.created_at }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        {% for tx in transactions %}
+        <tr class="border-b border-white/5">
+            <td class="py-2">{{ tx.id }}</td>
+            <td class="py-2">{{ tx.username }}</td>
+            <td class="py-2">{{ tx.type }}</td>
+            <td class="py-2">
+                {% if tx.type == 'expense' %}
+                    <span class="text-rose-400">-{{ tx.amount }} ₸</span>
+                {% else %}
+                    <span class="text-emerald-400">+{{ tx.amount }} ₸</span>
+                {% endif %}
+            </td>
+            <td class="py-2">{{ tx.created_at }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 
-    </div>
 </div>
-
-</body>
-</html>
+{% endblock %}

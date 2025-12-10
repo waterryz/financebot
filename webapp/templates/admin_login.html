@@ -1,34 +1,35 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ — Вход</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
+{% extends "admin_base.html" %}
 
-<div class="auth-card">
-    <h1>Вход в админ-панель</h1>
+{% block content %}
+
+<div class="card w-full max-w-md fade">
+    <h1 class="text-2xl font-semibold text-center mb-6 text-indigo-400">
+        🔐 Вход в админ-панель
+    </h1>
 
     {% if error %}
-        <p class="error">{{ error }}</p>
+    <div class="bg-rose-500/20 border border-rose-400/40 text-rose-300 p-3 rounded-lg mb-4">
+        {{ error }}
+    </div>
     {% endif %}
 
-    <form method="post">
-        <label>Логин:</label>
-        <input type="text" name="username" required>
+    <form method="POST" action="/admin/login" class="space-y-4">
+        <div>
+            <label class="block text-sm mb-1">Логин</label>
+            <input type="text" name="username"
+                   class="w-full px-3 py-2 rounded-lg bg-slate-800 border border-white/10 focus:border-indigo-500 focus:ring-indigo-500 transition">
+        </div>
 
-        <label>Пароль:</label>
-        <input type="password" name="password" required>
+        <div>
+            <label class="block text-sm mb-1">Пароль</label>
+            <input type="password" name="password"
+                   class="w-full px-3 py-2 rounded-lg bg-slate-800 border border-white/10 focus:border-indigo-500 focus:ring-indigo-500 transition">
+        </div>
 
-        <button class="auth-btn" type="submit">Войти</button>
+        <button class="w-full py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition font-semibold">
+            Войти
+        </button>
     </form>
-
-    <p class="auth-link">
-        <a href="/login">← Вернуться</a>
-    </p>
 </div>
 
-</body>
-</html>
+{% endblock %}

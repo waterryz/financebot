@@ -1,90 +1,59 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Отложенные покупки</title>
-    <link rel="stylesheet" href="/static/style.css">
+{% extends "layout.html" %}
+{% block content %}
 
-    <script>
-        function toggleSidebar() {
-            document.getElementById("sidebar").classList.toggle("open");
-        }
-    </script>
-</head>
-<div class="top-profile">
-    <div class="profile-icon" onclick="toggleProfileMenu()">👤</div>
+<div class="max-w-3xl mx-auto">
 
-    <div class="profile-menu" id="profileMenu">
-        <a href="/profile?token={{ token }}">👤 Профиль</a>
-        <a href="/settings?token={{ token }}">⚙ Настройки</a>
-        <a href="/login">🚪 Выйти</a>
-    </div>
-</div>
+    <h1 class="text-3xl font-semibold mb-6 flex items-center justify-center gap-2">
+        🛍 Отложенные покупки
+    </h1>
 
-<script>
-function toggleProfileMenu() {
-    document.getElementById("profileMenu").classList.toggle("open");
-}
-</script>
-
-<body>
-
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-tab" onclick="toggleSidebar()">
-        ☰
+    <!-- Кнопка добавить -->
+    <div class="w-full flex justify-center mt-6 mb-10">
+        <a href="/add_wish?token={{ token }}"
+           class="rounded-2xl bg-indigo-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-indigo-500 transition text-lg">
+            ➕ Добавить напоминание
+        </a>
     </div>
 
-    <div class="sidebar-content">
-        <a href="/home?token={{ token }}">🏠 Главная</a>
-        <a href="/add_expense?token={{ token }}">➖ Добавить расход</a>
-        <a href="/add_income?token={{ token }}">➕ Добавить доход</a>
-        <a href="/history?token={{ token }}">📜 История</a>
-        <a href="/goals?token={{ token }}">🎯 Цели</a>
+    <!-- Список желаний -->
+    <div class="space-y-4">
 
-        <a href="/stats?token={{ token }}">📊 Статистика</a>
-        <a href="/wishlist?token={{ token }}">🕒 Отложенные покупки</a>
-    </div>
-</div>
+        {% for w in wishes %}
+        <div class="bg-slate-900/80 p-4 rounded-2xl border border-white/10 shadow">
 
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-lg font-semibold">{{ w.item }}</p>
 
-<div class="wishlist-container">
+                    {% if w.price %}
+                        <p class="text-sm text-slate-400">Цена: {{ w.price }} ₸</p>
+                    {% else %}
+                        <p class="text-sm text-slate-400">Цена не указана</p>
+                    {% endif %}
 
-    <h1 class="wishlist-title">🕒 Отложенные покупки</h1>
-
-    <a href="/add_wish?token={{ token }}" class="tab-btn" style="display:block; text-align:center; margin-bottom:25px;">
-        ➕ Добавить желание
-    </a>
-
-    {% if items %}
-        {% for item in items %}
-        <div class="wish-card">
-
-            <div class="wish-top">
-                <div class="wish-name">{{ item[1] }}</div>
-
-                {% if item[2] and item[2] != 0 %}
-                    <div class="wish-price">{{ item[2] }} ₸</div>
-                {% else %}
-                    <div class="wish-price" style="color:#888; font-weight:400;">цена не указана</div>
-                {% endif %}
-
-                <div class="wish-date">
-                    🕒 Напоминание: {{ item[3].strftime('%Y-%m-%d %H:%M') }}
+                    <p class="text-xs text-slate-500 mt-1">
+                        Напомнить: {{ w.remind_at.strftime("%Y-%m-%d %H:%M") }}
+                    </p>
                 </div>
+
+                <a href="/cancel_wish?token={{ token }}&id={{ w.id }}"
+                   class="text-rose-400 font-semibold hover:text-rose-300 transition">
+                    ✖ Удалить
+                </a>
             </div>
 
-            <a class="wish-cancel" href="/cancel_wish?id={{ item[0] }}&token={{ token }}">
-                ❌ Отменить
-            </a>
         </div>
+        {% else %}
+
+        <!-- Пустой список -->
+        <p class="text-slate-500 text-center mt-10 text-lg">
+            Нет отложенных покупок 😌<br>
+            <span class="text-slate-400 text-base">Добавьте новое напоминание!</span>
+        </p>
+
         {% endfor %}
-    {% else %}
-        <p class="no-history">Пока нет отложенных покупок 🙂</p>
-    {% endif %}
+    </div>
 
 </div>
 
-</body>
-</html>
+{% endblock %}

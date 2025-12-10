@@ -4,27 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Регистрация</title>
-    <link rel="stylesheet" href="/static/style.css">
 
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-fade-in-up {
+            animation: fade-in-up 0.45s ease-out;
+        }
+    </style>
 </head>
-<body>
 
-<div class="auth-card">
-    <h1>Регистрация</h1>
+<body class="min-h-screen bg-slate-950 text-slate-50 flex items-center justify-center px-4 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900">
 
-    {% if error %}
-    <p class="auth-error">{{ error }}</p>
-    {% endif %}
+<div class="relative w-full max-w-md">
 
-    <form method="post">
-        <input type="text" name="username" placeholder="Логин" required>
-        <input type="password" name="password" placeholder="Пароль" required>
-        <button type="submit" class="auth-btn">Создать аккаунт</button>
-    </form>
+    <!-- Свечение -->
+    <div class="absolute -inset-6 bg-gradient-to-br from-primary-600/40 to-emerald-400/40 blur-3xl rounded-3xl opacity-70"></div>
 
-    <p class="auth-link">Уже есть аккаунт?
-        <a href="/login">Войти</a>
-    </p>
+    <!-- Карточка регистрации -->
+    <div class="relative animate-fade-in-up rounded-3xl border border-white/10 bg-slate-950/95 p-6 shadow-2xl shadow-black/70 backdrop-blur-xl sm:p-8">
+
+        <div class="mb-6 text-center">
+            <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-600 text-2xl shadow-md shadow-primary-900/60">
+                📝
+            </div>
+            <h1 class="text-2xl font-semibold text-slate-50">Регистрация</h1>
+            <p class="mt-1 text-sm text-slate-400">
+                Создайте новый аккаунт
+            </p>
+        </div>
+
+        {% if error %}
+        <div class="mb-4 rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-2.5 text-xs text-rose-100">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="post" class="space-y-4">
+
+            <div class="space-y-1.5">
+                <label class="block text-xs font-medium text-slate-300">Логин</label>
+                <input
+                        name="username"
+                        required
+                        type="text"
+                        placeholder="Введите логин"
+                        class="w-full rounded-2xl border border-white/10 bg-slate-900/70 px-3 py-2.5 text-sm shadow-inner shadow-black/60 text-slate-50 outline-none placeholder:text-slate-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/40 transition"
+                >
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="block text-xs font-medium text-slate-300">Пароль</label>
+                <input
+                        name="password"
+                        required
+                        type="password"
+                        placeholder="Введите пароль"
+                        class="w-full rounded-2xl border border-white/10 bg-slate-900/70 px-3 py-2.5 text-sm shadow-inner shadow-black/60 text-slate-50 outline-none placeholder:text-slate-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/40 transition"
+                >
+            </div>
+
+            <button
+                    type="submit"
+                    class="w-full mt-2 rounded-2xl bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary-900/60 transition hover:bg-primary-500 hover:-translate-y-0.5 active:translate-y-0">
+                Создать аккаунт
+            </button>
+        </form>
+
+        <p class="mt-5 text-center text-xs text-slate-400">
+            Уже есть аккаунт?
+            <a href="/login" class="font-semibold text-primary-400 hover:text-primary-300">
+                Войти
+            </a>
+        </p>
+    </div>
 </div>
 
 </body>

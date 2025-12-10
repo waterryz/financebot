@@ -1,0 +1,102 @@
+<aside class="fixed inset-y-0 left-0 z-30 w-64 bg-slate-950
+             border-r border-white/10 shadow-lg shadow-black/60 backdrop-blur-xl">
+
+    <div class="flex flex-col h-full">
+
+        <!-- HEADER -->
+        <div class="flex items-center gap-3 px-5 py-4 border-b border-white/10">
+            <div class="h-10 w-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-2xl">
+                💸
+            </div>
+            <div>
+                <p class="text-base font-semibold text-white">FinanceBot</p>
+                <p class="text-xs text-slate-400">Учет финансов</p>
+            </div>
+        </div>
+
+        <!-- NAV -->
+        <nav class="flex-1 px-4 py-4 space-y-1 text-sm">
+
+            <a href="/home?token={{ token }}"
+               class="flex items-center gap-2 px-3 py-2 rounded-lg transition
+                      {% if current_page == 'home' %}
+                          bg-slate-800 text-white
+                      {% else %}
+                          text-slate-200 hover:bg-slate-800/70
+                      {% endif %}">
+                🏠 Главная
+            </a>
+
+            <a href="/add_expense?token={{ token }}"
+               class="flex items-center gap-2 px-3 py-2 rounded-lg transition
+                      {% if current_page == 'add_expense' %}
+                          bg-rose-500/20 text-rose-300
+                      {% else %}
+                          text-slate-200 hover:bg-slate-800/70
+                      {% endif %}">
+                ➖ Добавить расход
+            </a>
+
+            <a href="/add_income?token={{ token }}"
+               class="flex items-center gap-2 px-3 py-2 rounded-lg transition
+                      {% if current_page == 'add_income' %}
+                          bg-emerald-500/20 text-emerald-300
+                      {% else %}
+                          text-slate-200 hover:bg-slate-800/70
+                      {% endif %}">
+                ➕ Добавить доход
+            </a>
+
+            <a href="/history?token={{ token }}"
+               class="flex items-center gap-2 px-3 py-2 rounded-lg transition
+                      {% if current_page == 'history' %}
+                          bg-slate-800 text-white
+                      {% else %}
+                          text-slate-200 hover:bg-slate-800/70
+                      {% endif %}">
+                📜 История
+            </a>
+
+            <a href="/goals?token={{ token }}"
+               class="flex items-center gap-2 px-3 py-2 rounded-lg transition
+                      {% if current_page == 'goals' %}
+                          bg-slate-800 text-white
+                      {% else %}
+                          text-slate-200 hover:bg-slate-800/70
+                      {% endif %}">
+                🎯 Цели
+            </a>
+
+            <a href="/add_goal?token={{ token }}"
+               class="flex items-center gap-2 px-3 py-2 rounded-lg transition
+                      {% if current_page == 'add_goal' %}
+                          bg-emerald-500/20 text-emerald-300
+                      {% else %}
+                          text-slate-200 hover:bg-slate-800/70
+                      {% endif %}">
+                ➕ Создать цель
+            </a>
+
+            <a href="/wishlist?token={{ token }}"
+               class="flex items-center gap-2 px-3 py-2 rounded-lg transition
+                      {% if current_page == 'wishlist' %}
+                          bg-slate-800 text-white
+                      {% else %}
+                          text-slate-200 hover:bg-slate-800/70
+                      {% endif %}">
+                🛍 Покупки
+            </a>
+
+            <a href="/stats?token={{ token }}"
+               class="flex items-center gap-2 px-3 py-2 rounded-lg transition
+                      {% if current_page == 'stats' %}
+                          bg-slate-800 text-white
+                      {% else %}
+                          text-slate-200 hover:bg-slate-800/70
+                      {% endif %}">
+                📊 Статистика
+            </a>
+
+        </nav>
+    </div>
+</aside>

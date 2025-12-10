@@ -1,96 +1,67 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ — Статистика</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
+{% extends "admin_layout.html" %}
 
-{% include "admin_sidebar.html" %}
+{% block content %}
 
-<div class="admin-content">
+<h1 class="text-3xl font-bold mb-6">📊 Статистика системы</h1>
 
-    <div class="admin-card">
-        <h1 class="admin-title">Статистика системы</h1>
+<div class="grid md:grid-cols-3 gap-6 mb-10">
 
-        <!-- KPI Блоки -->
-        <div class="kpi-row">
-            <div class="kpi-card">
-                <h3>Пользователей</h3>
-                <p>{{ total_users }}</p>
-            </div>
+    <div class="bg-slate-900/70 p-4 rounded-xl border border-white/10 shadow">
+        <p class="text-slate-400 text-sm">Пользователей</p>
+        <p class="text-3xl font-semibold">{{ total_users }}</p>
+    </div>
 
-            <div class="kpi-card">
-                <h3>Транзакций</h3>
-                <p>{{ total_transactions }}</p>
-            </div>
+    <div class="bg-slate-900/70 p-4 rounded-xl border border-white/10 shadow">
+        <p class="text-slate-400 text-sm">Доходы</p>
+        <p class="text-3xl font-semibold text-emerald-400">{{ total_income }} ₸</p>
+    </div>
 
-            <div class="kpi-card">
-                <h3>Доходов всего</h3>
-                <p>{{ total_income }}</p>
-            </div>
-
-            <div class="kpi-card">
-                <h3>Расходов всего</h3>
-                <p>{{ total_expenses }}</p>
-            </div>
-        </div>
-
-        <!-- Диаграмма расходов по типам -->
-        <h2 style="text-align:center;margin-top:30px;">Распределение расходов</h2>
-        <canvas id="expensePie" height="150"></canvas>
-
-        <!-- Линейный график -->
-        <h2 style="text-align:center;margin-top:40px;">Динамика доходов и расходов</h2>
-        <canvas id="lineChart" height="150"></canvas>
+    <div class="bg-slate-900/70 p-4 rounded-xl border border-white/10 shadow">
+        <p class="text-slate-400 text-sm">Расходы</p>
+        <p class="text-3xl font-semibold text-rose-400">{{ total_expenses }} ₸</p>
     </div>
 
 </div>
 
+<div class="bg-slate-900/70 p-6 rounded-2xl border border-white/10 shadow mb-10">
+    <canvas id="catChart"></canvas>
+</div>
+
+<div class="bg-slate-900/70 p-6 rounded-2xl border border-white/10 shadow">
+    <canvas id="timelineChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-    // =============== Pie Chart (категории расходов) ===============
-    const pieCtx = document.getElementById('expensePie');
+const catCtx = document.getElementById('catChart');
+new Chart(catCtx, {
+    type: 'pie',
+    data: {
+        labels: {{ category_names | tojson }},
+        datasets: [{
+            data: {{ category_values | tojson }},
+        }]
+    }
+});
 
-    new Chart(pieCtx, {
-        type: 'pie',
-        data: {
-            labels: {{ category_names | safe }},
-            datasets: [{
-                data: {{ category_values | safe }},
-                backgroundColor: [
-                    '#4b78ff', '#ff6384', '#ffcd56', '#4bc0c0', '#9966ff', '#36a2eb'
-                ]
-            }]
-        }
-    });
-
-    // =============== Line Chart (динамика) ===============
-    const lineCtx = document.getElementById('lineChart');
-
-    new Chart(lineCtx, {
-        type: 'line',
-        data: {
-            labels: {{ timeline_dates | safe }},
-            datasets: [
-                {
-                    label: 'Доходы',
-                    data: {{ timeline_income | safe }},
-                    borderColor: '#4bc0c0',
-                    borderWidth: 3
-                },
-                {
-                    label: 'Расходы',
-                    data: {{ timeline_expense | safe }},
-                    borderColor: '#ff6384',
-                    borderWidth: 3
-                }
-            ]
-        }
-    });
+const timeCtx = document.getElementById('timelineChart');
+new Chart(timeCtx, {
+    type: 'line',
+    data: {
+        labels: {{ timeline_dates | tojson }},
+        datasets: [
+            {
+                label: "Доходы",
+                data: {{ timeline_income | tojson }},
+            },
+            {
+                label: "Расходы",
+                data: {{ timeline_expense | tojson }},
+            }
+        ]
+    }
+});
 </script>
 
-</body>
-</html>
+{% endblock %}

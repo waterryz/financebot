@@ -1,31 +1,26 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Изменить логин</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
+{% extends "admin_layout.html" %}
+{% block content %}
 
-{% include "admin_sidebar.html" %}
+<div class="card max-w-lg mx-auto">
 
-<div class="admin-content">
-    <div class="admin-card">
+    <h1 class="text-2xl font-semibold mb-6">
+        Изменить логин пользователя {{ username }}
+    </h1>
 
-        <h1 class="admin-title">Изменить логин пользователя {{ username }}</h1>
+    <form action="/admin/user/{{ user_id }}/edit?token={{ token }}" method="post" class="space-y-4">
 
-        <form action="/admin/user/{{ user_id }}/edit?admin={{ admin_name }}" method="post">
+        <div>
+            <label class="text-sm opacity-70">Новый логин</label>
+            <input type="text" name="new_username"
+                   class="w-full mt-1 bg-slate-800 border border-white/10 rounded-lg p-3">
+        </div>
 
-            <label class="admin-label">Новый логин:</label>
-            <input class="admin-input" type="text" name="new_username" required>
+        <button class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-lg">
+            Сохранить
+        </button>
 
-            <button class="save-btn" type="submit">Сохранить</button>
+    </form>
 
-        </form>
-
-    </div>
 </div>
 
-</body>
-</html>
+{% endblock %}

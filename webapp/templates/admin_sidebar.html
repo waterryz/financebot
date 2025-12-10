@@ -1,12 +1,35 @@
-<div class="admin-sidebar">
-    <h3 style="padding-left: 20px; color:#4b78ff;">Админ</h3>
+<div id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-slate-900/90 border-r border-white/10 backdrop-blur-xl shadow-xl p-4 hidden md:block">
 
-    <a href="/admin?admin={{ admin_name }}">🏠 Главная</a>
-    <a href="/admin/users?admin={{ admin_name }}">👥 Пользователи</a>
-    <a href="/admin/transactions?admin={{ admin_name }}">💸 Транзакции</a>
-    <a href="/admin/stats?admin={{ admin_name }}">📊 Статистика</a>
-    <a href="/admin/logs?admin={{ admin_name }}">📄 Логи</a>
+    <h2 class="text-xl font-semibold text-slate-200 mb-6">
+        ⚙️ Админ-панель
+    </h2>
 
-    <h3 style="padding-left: 20px; margin-top: 20px;">Пользователь</h3>
-    <a href="/login">🚪 Выйти</a>
+    <nav class="space-y-2">
+
+        <a href="/admin?token={{ token }}"
+           class="block px-4 py-2 rounded-lg hover:bg-slate-800 transition
+                  {% if current_page == 'admin_home' %} bg-slate-800 text-indigo-400 {% endif %}">
+            🏠 Главная
+        </a>
+
+        <a href="/admin/users?token={{ token }}"
+           class="block px-4 py-2 rounded-lg hover:bg-slate-800 transition
+                  {% if current_page == 'admin_users' %} bg-slate-800 text-indigo-400 {% endif %}">
+            👥 Пользователи
+        </a>
+
+        <a href="/admin/transactions?token={{ token }}"
+           class="block px-4 py-2 rounded-lg hover:bg-slate-800 transition
+                  {% if current_page == 'admin_transactions' %} bg-slate-800 text-indigo-400 {% endif %}">
+            💸 Транзакции
+        </a>
+
+        <a href="/admin/logs?token={{ token }}"
+           class="block px-4 py-2 rounded-lg hover:bg-slate-800 transition
+                  {% if current_page == 'admin_logs' %} bg-slate-800 text-indigo-400 {% endif %}">
+            📜 Логи
+        </a>
+
+    </nav>
+
 </div>

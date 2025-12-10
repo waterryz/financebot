@@ -1,37 +1,115 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ — Главная</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
+{% extends "admin_layout.html" %}
 
-<div class="admin-sidebar">
+{% block content %}
 
-    <h3 class="admin-title-sidebar">Админ</h3>
-    <a href="/admin?admin={{ admin_name }}">🏠 Главная</a>
-    <a href="/admin/users?admin={{ admin_name }}">👥 Пользователи</a>
-    <a href="/admin/transactions?admin={{ admin_name }}">💸 Транзакции</a>
-    <a href="/admin/stats?admin={{ admin_name }}">📊 Статистика</a>
-    <a href="/admin/logs?admin={{ admin_name }}">📄 Логи</a>
+<h1 class="text-4xl font-bold mb-10">📊 Админ — Панель управления</h1>
 
-    <h3 class="admin-title-sidebar" style="margin-top: 20px;">Пользователь</h3>
-    <a href="/login">🚪 Выйти</a>
-</div>
+<!-- Основная статистика -->
+<div class="grid md:grid-cols-4 gap-6">
 
-
-
-<div class="admin-content">
-    <div class="admin-card">
-        <h1 class="admin-title">Админ панель</h1>
-
-        <p>Добро пожаловать, <b>{{ admin_name }}</b>!</p>
-        <p>Выберите раздел слева.</p>
-
+    <div class="bg-slate-900/70 p-6 rounded-2xl border border-white/10 shadow-lg">
+        <p class="text-slate-400 text-sm">Пользователей</p>
+        <p class="text-4xl font-bold">{{ stats.total_users }}</p>
     </div>
+
+    <div class="bg-slate-900/70 p-6 rounded-2xl border border-white/10 shadow-lg">
+        <p class="text-slate-400 text-sm">Транзакций</p>
+        <p class="text-4xl font-bold">{{ stats.total_transactions }}</p>
+    </div>
+
+    <div class="bg-slate-900/70 p-6 rounded-2xl border border-white/10 shadow-lg">
+        <p class="text-slate-400 text-sm">Доходы</p>
+        <p class="text-3xl text-emerald-400 font-semibold">{{ stats.total_income }} ₸</p>
+    </div>
+
+    <div class="bg-slate-900/70 p-6 rounded-2xl border border-white/10 shadow-lg">
+        <p class="text-slate-400 text-sm">Расходы</p>
+        <p class="text-3xl text-rose-400 font-semibold">{{ stats.total_expenses }} ₸</p>
+    </div>
+
 </div>
 
-</body>
-</html>
+<!-- Графики -->
+<div class="grid md:grid-cols-2 gap-6 mt-10">
+
+    <div class="bg-slate-900/70 p-6 rounded-2xl border border-white/10 shadow-xl">
+        <h2 class="text-xl font-semibold mb-4">Доходы и расходы за последние 7 дней</h2>
+        <canvas id="moneyChart" height="180"></canvas>
+    </div>
+
+    <div class="bg-slate-900/70 p-6 rounded-2xl border border-white/10 shadow-xl">
+        <h2 class="text-xl font-semibold mb-4">Активность пользователей</h2>
+        <canvas id="activityChart" height="180"></canvas>
+    </div>
+
+</div>
+
+<div class="mt-10 bg-slate-900/70 p-6 rounded-2xl border border-white/10 shadow-xl">
+    <h2 class="text-xl font-semibold mb-4">Топ 5 категорий расходов</h2>
+    <canvas id="topCategoriesChart" height="150"></canvas>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const weekLabels = {{ week_labels | tojson }};
+const incomeData = {{ income_data | tojson }};
+const expenseData = {{ expense_data | tojson }};
+
+new Chart(document.getElementById("moneyChart"), {
+    type: "line",
+    data: {
+        labels: weekLabels,
+        datasets: [
+            {
+                label: "Доходы",
+                borderColor: "#4ade80",
+                backgroundColor: "#4ade8050",
+                data: incomeData,
+                tension: .4
+            },
+            {
+                label: "Расходы",
+                borderColor: "#f87171",
+                backgroundColor: "#f8717150",
+                data: expenseData,
+                tension: .4
+            }
+        ]
+    }
+});
+
+
+const actLabels = {{ activity_labels | tojson }};
+const actData = {{ activity_data | tojson }};
+
+new Chart(document.getElementById("activityChart"), {
+    type: "bar",
+    data: {
+        labels: actLabels,
+        datasets: [{
+            label: "Активность",
+            backgroundColor: "#60a5faaa",
+            data: actData
+        }]
+    }
+});
+
+
+const topLabels = {{ top_cat_labels | tojson }};
+const topValues = {{ top_cat_values | tojson }};
+
+new Chart(document.getElementById("topCategoriesChart"), {
+    type: "pie",
+    data: {
+        labels: topLabels,
+        datasets: [{
+            backgroundColor: ["#4ade80", "#60a5fa", "#a78bfa", "#fbbf24", "#f87171"],
+            data: topValues
+        }]
+    }
+});
+</script>
+
+{% endblock %}

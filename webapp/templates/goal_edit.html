@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Редактировать цель</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade { animation: fade .35s ease-out; }
+    </style>
+</head>
+
+<body class="bg-slate-950 text-slate-50">
+
+{% include "sidebar.html" %}
+
+<main class="pt-20 px-4 md:pl-72 max-w-lg mx-auto">
+
+    <h1 class="text-3xl font-semibold text-center mb-8">✏️ Редактировать цель</h1>
+
+    <form method="post"
+          class="animate-fade bg-slate-900/80 border border-white/10 rounded-2xl
+                 p-6 shadow-xl shadow-black/50 backdrop-blur-xl space-y-5">
+
+        <!-- Название -->
+        <div>
+            <label class="block mb-1 text-sm text-slate-300">Название</label>
+            <input required name="name" type="text" value="{{ goal.name }}"
+                   class="w-full px-4 py-3 rounded-xl bg-slate-800 text-slate-100
+                          border border-white/10 focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <!-- Целевая сумма -->
+        <div>
+            <label class="block mb-1 text-sm text-slate-300">Целевая сумма (₸)</label>
+            <input required name="target" type="number" value="{{ goal.target }}"
+                   class="w-full px-4 py-3 rounded-xl bg-slate-800 text-slate-100
+                          border border-white/10 focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <button class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500
+                       transition text-white text-lg font-semibold">
+            Сохранить изменения
+        </button>
+    </form>
+
+</main>
+
+</body>
+</html>

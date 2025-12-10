@@ -1,93 +1,31 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ — Пользователи</title>
-    <link rel="stylesheet" href="/static/style.css">
+{% extends "admin_layout.html" %}
+{% block content %}
 
-    <style>
-        .search-box {
-            margin-bottom: 20px;
-        }
+<h1 class="text-3xl font-bold mb-6">👥 Пользователи</h1>
 
-        .search-input {
-            padding: 8px;
-            width: 280px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
+<a href="/admin/create_user?token={{ token }}"
+   class="inline-block mb-4 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg shadow">
+    ➕ Создать пользователя
+</a>
 
-        .settings-btn {
-            padding: 6px 12px;
-            background: #4b67ff;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
+<div class="bg-slate-900/70 rounded-2xl border border-white/10 p-4 shadow">
+    <table class="w-full text-left">
+        <tr class="text-slate-400 border-b border-white/10">
+            <th class="py-2">ID</th>
+            <th class="py-2">Логин</th>
+            <th class="py-2">Действия</th>
+        </tr>
 
-        .settings-btn:hover {
-            background: #354bff;
-        }
-
-        .admin-table th, .admin-table td {
-            text-align: left;
-            padding: 10px;
-        }
-    </style>
-
-    <script>
-        function searchUsers() {
-            let input = document.getElementById("search").value.toLowerCase();
-            let rows = document.querySelectorAll(".user-row");
-
-            rows.forEach(row => {
-                let name = row.dataset.username.toLowerCase();
-                row.style.display = name.includes(input) ? "" : "none";
-            });
-        }
-    </script>
-</head>
-<body>
-
-{% include "admin_sidebar.html" %}
-
-<div class="admin-content">
-    <div class="admin-card">
-        <h1 class="admin-title">Пользователи</h1>
-
-        <!-- 🔍 Поиск -->
-        <div class="search-box">
-            <input id="search" class="search-input" type="text"
-                   placeholder="Поиск по логину..."
-                   onkeyup="searchUsers()">
-        </div>
-
-        <table class="admin-table">
-            <tr>
-                <th>ID</th>
-                <th>Логин</th>
-                <th>Действия</th>
-            </tr>
-
-            {% for u in users %}
-            <tr class="user-row" data-username="{{ u.username }}">
-                <td>{{ u.id }}</td>
-                <td>{{ u.username }}</td>
-
-                <!-- Кнопка настроек -->
-                <td>
-                    <a href="/admin/user/{{ u.id }}?admin={{ admin_name }}">
-                        <button class="settings-btn">⚙ Настройки</button>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
+        {% for u in users %}
+        <tr class="border-b border-white/5">
+            <td class="py-2">{{ u.id }}</td>
+            <td class="py-2">{{ u.username }}</td>
+            <td class="py-2">
+                <a href="/admin/user/{{ u.id }}?token={{ token }}" class="text-indigo-400 hover:text-indigo-300">Открыть</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
 
-</body>
-</html>
+{% endblock %}

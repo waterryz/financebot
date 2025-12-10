@@ -1,60 +1,86 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Настройки</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <script>
-        function toggleSidebar() {
-            document.getElementById("sidebar").classList.toggle("open");
-        }
-    </script>
-</head>
-<div class="top-profile">
-    <div class="profile-icon" onclick="toggleProfileMenu()">👤</div>
+{% extends "layout.html" %}
+{% block content %}
 
-    <div class="profile-menu" id="profileMenu">
-        <a href="/profile?token={{ token }}">👤 Профиль</a>
-        <a href="/settings?token={{ token }}">⚙ Настройки</a>
-        <a href="/login">🚪 Выйти</a>
+<div class="max-w-xl mx-auto mt-10">
+
+    <h1 class="text-3xl font-semibold mb-8 flex items-center justify-center gap-2">
+        ⚙ Настройки
+    </h1>
+
+    <!-- Уведомления (простые текстом под заголовком) -->
+    {% if request.query_params.success == "username_updated" %}
+        <p class="mb-4 text-sm text-emerald-400">Логин успешно обновлён ✅</p>
+    {% elif request.query_params.success == "password_updated" %}
+        <p class="mb-4 text-sm text-emerald-400">Пароль успешно изменён ✅</p>
+    {% elif request.query_params.error == "username_taken" %}
+        <p class="mb-4 text-sm text-rose-400">Такой логин уже занят ❌</p>
+    {% elif request.query_params.error == "password_wrong" %}
+        <p class="mb-4 text-sm text-rose-400">Текущий пароль неверный ❌</p>
+    {% endif %}
+
+    <!-- Смена логина -->
+    <div class="bg-slate-900/80 rounded-2xl p-6 border border-white/10 shadow mb-8">
+        <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+            🔤 Смена логина
+        </h2>
+
+        <form action="/update_username" method="post" class="space-y-4">
+            <input type="hidden" name="token" value="{{ token }}">
+
+            <div>
+                <p class="text-sm text-slate-400 mb-1">Текущий логин</p>
+                <div class="bg-slate-800 rounded-xl p-3 border border-white/10 text-white">
+                    {{ username }}
+                </div>
+            </div>
+
+            <input
+                type="text"
+                name="new_username"
+                placeholder="Новый логин"
+                required
+                class="w-full p-3 rounded-xl bg-slate-800 border border-white/10 text-white"
+            >
+
+            <button class="bg-primary-600 hover:bg-primary-500 w-full py-3 rounded-xl font-semibold text-white">
+                Обновить логин
+            </button>
+        </form>
     </div>
+
+    <!-- Смена пароля -->
+    <div class="bg-slate-900/80 rounded-2xl p-6 border border-white/10 shadow mb-8">
+        <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+            🔐 Смена пароля
+        </h2>
+
+        <form action="/update_password" method="post" class="space-y-4">
+            <input type="hidden" name="token" value="{{ token }}">
+
+            <input
+                type="password"
+                name="old_password"
+                placeholder="Текущий пароль"
+                required
+                class="w-full p-3 rounded-xl bg-slate-800 border border-white/10 text-white"
+            >
+
+            <input
+                type="password"
+                name="new_password"
+                placeholder="Новый пароль"
+                required
+                class="w-full p-3 rounded-xl bg-slate-800 border border-white/10 text-white"
+            >
+
+            <button class="bg-primary-600 hover:bg-primary-500 w-full py-3 rounded-xl font-semibold text-white">
+                Обновить пароль
+            </button>
+        </form>
+    </div>
+
+
 </div>
 
-<script>
-function toggleProfileMenu() {
-    document.getElementById("profileMenu").classList.toggle("open");
-}
-</script>
 
-<body>
-<div class="sidebar" id="sidebar">
-
-    <div class="sidebar-tab" onclick="toggleSidebar()">
-        ☰
-    </div>
-
-    <div class="sidebar-content">
-        <a href="/home?token={{ token }}">🏠 Главная</a>
-        <a href="/add_expense?token={{ token }}">➖ Добавить расход</a>
-        <a href="/add_income?token={{ token }}">➕ Добавить доход</a>
-        <a href="/history?token={{ token }}">📜 История</a>
-        <a href="/goals?token={{ token }}">🎯 Цели</a>
-
-        <a href="/wishlist?token={{ token }}">🕒 Отложенные покупки</a>
-        <a href="/stats?token={{ token }}">📊 Статистика</a>
-
-    </div>
-
-</div>
-
-<div class="auth-card">
-    <h1>Настройки профиля</h1>
-
-    <a class="profile-btn" href="/change_username?token={{ token }}">✏ Сменить логин</a>
-    <a class="profile-btn" href="/change_password?token={{ token }}">🔑 Сменить пароль</a>
-    <a class="profile-btn" href="/profile?token={{ token }}">⬅ Назад</a>
-</div>
-
-</body>
-</html>
+{% endblock %}

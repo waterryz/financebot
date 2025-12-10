@@ -1,105 +1,157 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Статистика</title>
-    <link rel="stylesheet" href="/static/style.css">
+{% extends "layout.html" %}
+{% block content %}
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script>
-        function toggleSidebar() {
-            document.getElementById("sidebar").classList.toggle("open");
+<div class="max-w-5xl mx-auto">
+
+    <h1 class="text-3xl font-semibold mb-8 flex items-center justify-center gap-2">
+        📊 Статистика
+    </h1>
+
+    <!-- Верхний блок: Итоги, категории, последняя транзакция -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+
+        <!-- Итоги месяца -->
+        <div class="bg-slate-900/80 rounded-3xl p-5 border border-white/10 shadow">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                📅 Итоги месяца
+            </h2>
+
+            <div class="space-y-2 text-sm">
+                <div class="flex justify-between">
+                    <span>Доход:</span>
+                    <span class="text-emerald-400 font-semibold">
+                        {{ stats.total_income }} ₸
+                    </span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Расход:</span>
+                    <span class="text-rose-400 font-semibold">
+                        {{ stats.total_expense }} ₸
+                    </span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Баланс:</span>
+                    <span class="text-indigo-400 font-semibold">
+                        {{ stats.balance }} ₸
+                    </span>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Топ категорий -->
+        <div class="bg-slate-900/80 rounded-3xl p-5 border border-white/10 shadow">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                🔥 Топ категорий
+            </h2>
+
+            <div class="space-y-1 text-sm">
+                {% if stats.top_categories %}
+                    {% for name, total in stats.top_categories %}
+                        <div class="flex justify-between">
+                            <span>{{ name }}</span>
+                            <span class="text-indigo-300 font-semibold">{{ total }} ₸</span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-slate-500 text-sm">Нет данных</p>
+                {% endif %}
+            </div>
+        </div>
+
+
+        <!-- Последняя транзакция -->
+        <div class="bg-slate-900/80 rounded-3xl p-5 border border-white/10 shadow">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                🧾 Последняя транзакция
+            </h2>
+
+            {% if stats.last_transaction %}
+                <div class="text-sm space-y-1">
+                    <div class="flex justify-between">
+                        <span>Сумма:</span>
+                        <span class="{% if stats.last_transaction.type == 'income' %}text-emerald-400{% else %}text-rose-400{% endif %} font-semibold">
+                            {{ stats.last_transaction.amount }} ₸
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <span>Категория:</span>
+                        <span class="text-slate-300">{{ stats.last_transaction.category }}</span>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <span>Описание:</span>
+                        <span class="text-slate-400">
+                            {{ stats.last_transaction.description or 'Без описания' }}
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between text-xs text-slate-500 pt-1">
+                        <span>Дата:</span>
+                        <span>{{ stats.last_transaction.date }}</span>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-slate-500 text-sm">Нет данных</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+
+    <!-- ГРАФИК расходов -->
+    <div class="mt-4">
+        <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+            📈 Динамика расходов по дням
+        </h2>
+
+        <div class="bg-slate-900/80 rounded-3xl p-5 border border-white/10 shadow">
+            <canvas id="expenseChart" height="130"></canvas>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- SCRIPT: построение графика -->
+<script>
+    const labels = {{ stats.daily_expenses | map(attribute=0) | list | tojson }};
+    const values = {{ stats.daily_expenses | map(attribute=1) | list | tojson }};
+
+    new Chart(document.getElementById('expenseChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Расходы",
+                data: values,
+                borderWidth: 3,
+                tension: 0.3,
+                pointRadius: 4,
+                borderColor: "rgb(99,102,241)",        // indigo-500
+                backgroundColor: "rgba(99,102,241,0.2)"
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#aaa' },
+                    grid: { color: 'rgba(255,255,255,0.05)' }
+                },
+                y: {
+                    ticks: { color: '#aaa' },
+                    grid: { color: 'rgba(255,255,255,0.05)' }
+                }
+            }
         }
-    </script>
-</head>
-<div class="top-profile">
-    <div class="profile-icon" onclick="toggleProfileMenu()">👤</div>
-
-    <div class="profile-menu" id="profileMenu">
-        <a href="/profile?token={{ token }}">👤 Профиль</a>
-        <a href="/settings?token={{ token }}">⚙ Настройки</a>
-        <a href="/login">🚪 Выйти</a>
-    </div>
-</div>
-
-<script>
-function toggleProfileMenu() {
-    document.getElementById("profileMenu").classList.toggle("open");
-}
+    });
 </script>
 
-<body>
-
-<!-- SIDE BAR -->
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-tab" onclick="toggleSidebar()">☰</div>
-
-    <div class="sidebar-content">
-        <a href="/home?token={{ token }}">🏠 Главная</a>
-        <a href="/add_expense?token={{ token }}">➖ Расход</a>
-        <a href="/add_income?token={{ token }}">➕ Доход</a>
-        <a href="/history?token={{ token }}">📜 История</a>
-        <a href="/goals?token={{ token }}">🎯 Цели</a>
-
-        <a href="/wishlist?token={{ token }}">🕒 Отложенные покупки</a>
-        <a href="/stats?token={{ token }}">📊 Статистика</a>
-
-    </div>
-</div>
-
-<div class="page-wrapper">
-
-    <div class="stats-container">
-
-        <h1 class="stats-title">Статистика</h1>
-
-        <div class="stats-block">
-            <p class="inc-title">Доходы:</p>
-            <p class="inc-value">{{ income }} ₸</p>
-
-            <p class="exp-title">Расходы:</p>
-            <p class="exp-value">{{ expense }} ₸</p>
-        </div>
-
-        <!-- Диаграмма -->
-        <div class="chart-wrapper">
-            <canvas id="chart"></canvas>
-        </div>
-
-
-    </div>
-
-</div>
-
-<script>
-const ctx = document.getElementById('chart').getContext('2d');
-
-new Chart(ctx, {
-    type: 'pie',
-    data: {
-        labels: {{ labels | tojson }},
-        datasets: [{
-            data: {{ values | tojson }},
-            backgroundColor: [
-                '#ff6b6b',
-                '#4dabf7',
-                '#ffd43b',
-                '#69db7c',
-                '#845ef7',
-                '#ffa94d',
-                '#40c057'
-            ]
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false
-    }
-});
-</script>
-
-</body>
-</html>
+{% endblock %}

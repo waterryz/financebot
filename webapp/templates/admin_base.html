@@ -3,46 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
 
-    <link rel="stylesheet" href="/static/style.css">
+    <title>{{ title or "Админ" }}</title>
 
-    <script>
-        function toggleSidebar() {
-            document.getElementById("sidebar").classList.toggle("open");
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            background: #020617;
+            color: #f1f5f9;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui;
         }
-    </script>
+
+        .card {
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(148,163,184,0.18);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .fade {
+            animation: fade .35s ease-out;
+        }
+
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 
-<body>
+<body class="flex justify-center items-center min-h-screen p-4 fade">
 
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-
-    <div class="sidebar-tab" onclick="document.getElementById('sidebar').classList.toggle('open')">
-        ☰
-    </div>
-
-    <div class="sidebar-content">
-
-        <h3 style="padding-left:15px; color:#4b78ff;">Админ</h3>
-
-        <a href="/admin?admin={{ admin_name }}">🏠 Главная</a>
-        <a href="/admin/users?admin={{ admin_name }}">👥 Пользователи</a>
-        <a href="/admin/transactions?admin={{ admin_name }}">💸 Транзакции</a>
-        <a href="/admin/stats?admin={{ admin_name }}">📊 Статистика</a>
-        <a href="/admin/logs?admin={{ admin_name }}">❗ Логи</a>
-
-        <h3 style="padding-left:15px;margin-top:20px;">Пользователь</h3>
-        <a href="/login">🚪 Выйти</a>
-    </div>
-</div>
-
-
-<!-- CONTENT -->
-<div class="auth-card">
     {% block content %}{% endblock %}
-</div>
 
 </body>
 </html>

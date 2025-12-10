@@ -1,100 +1,61 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Мои цели</title>
-    <link rel="stylesheet" href="/static/style.css">
+{% extends "layout.html" %}
+{% block content %}
 
-    <script>
-        function toggleSidebar() {
-            document.getElementById("sidebar").classList.toggle("open");
-        }
-    </script>
-</head>
-<div class="top-profile">
-    <div class="profile-icon" onclick="toggleProfileMenu()">👤</div>
+<h1 class="text-3xl font-semibold text-center mb-8 flex items-center justify-center gap-2">
+    🎯 Цели
+</h1>
 
-    <div class="profile-menu" id="profileMenu">
-        <a href="/profile?token={{ token }}">👤 Профиль</a>
-        <a href="/settings?token={{ token }}">⚙ Настройки</a>
-        <a href="/login">🚪 Выйти</a>
-    </div>
-</div>
+<div class="grid md:grid-cols-2 gap-6 fade">
 
-<script>
-function toggleProfileMenu() {
-    document.getElementById("profileMenu").classList.toggle("open");
-}
-</script>
+{% for g in goals %}
+    <div class="bg-slate-900/60 border border-white/10 rounded-2xl p-5 shadow-xl shadow-black/40 backdrop-blur-xl">
 
-<body>
+        <!-- ВЕРХНИЙ БЛОК: Название + кнопки -->
+        <div class="flex justify-between items-center mb-2">
 
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-tab" onclick="toggleSidebar()">☰</div>
+            <!-- Название цели -->
+            <h2 class="text-lg font-semibold">{{ g.name }}</h2>
 
-    <div class="sidebar-content">
-        <a href="/home?token={{ token }}">🏠 Главная</a>
-        <a href="/add_expense?token={{ token }}">➖ Добавить расход</a>
-        <a href="/add_income?token={{ token }}">➕ Добавить доход</a>
-        <a href="/history?token={{ token }}">📜 История</a>
-        <a href="/wishlist?token={{ token }}">🕒 Отложенные покупки</a>
-        <a href="/goals?token={{ token }}">🎯 Цели</a>
-        <a href="/stats?token={{ token }}">📊 Статистика</a>
+            <!-- Кнопки -->
+            <div class="flex items-center gap-2">
 
-    </div>
-</div>
-
-<!-- PAGE WRAPPER -->
-<div class="page-wrapper">
-
-    <div class="wishlist-container">
-        <h1 class="wishlist-title">🎯 Мои цели</h1>
-
-        <!-- Кнопка добавить -->
-        <a href="/add_goal?token={{ token }}"
-           class="goal-btn"
-           style="margin-bottom: 20px; display: block; text-align: center;">
-            ➕ Добавить цель
-        </a>
-
-        <!-- Список всех целей -->
-        {% for g in goals %}
-        <div class="wish-card">
-
-            <div class="wish-top">
-                <div class="wish-name">{{ g.name }}</div>
-                <div class="wish-price">{{ g.saved }} / {{ g.target }} ₸</div>
-                <div class="wish-date">
-                    Создана: {{ g.date }}
-                </div>
-            </div>
-
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: {{ g.percent }}%;"></div>
-            </div>
-
-            <div class="wish-actions">
-                <a href="/goal_edit?token={{ token }}&id={{ g.id }}" class="wish-btn">
-                    ✏ Изменить
+                <!-- Пополнить -->
+                <a href="/add_goal_money?token={{ token }}&id={{ g.id }}"
+                   class="text-xs px-3 py-1 rounded-full bg-indigo-600 hover:bg-indigo-500 transition text-white">
+                   Пополнить
                 </a>
 
-                <a href="/goal_delete?token={{ token }}&id={{ g.id }}" class="wish-btn danger">
-                    🗑 Удалить
+                <!-- Вывести -->
+                <a href="/goal_withdraw?token={{ token }}&id={{ g.id }}"
+                   class="text-xs px-3 py-1 rounded-full bg-indigo-500 hover:bg-indigo-400 transition text-white">
+                    Вывести
                 </a>
-            </div>
 
+                <!-- Удалить -->
+                <a href="/goal_delete?token={{ token }}&id={{ g.id }}"
+                   onclick="return confirm('Удалить эту цель?');"
+                   class="text-xs px-3 py-1 rounded-full bg-red-600 hover:bg-red-500 transition text-white">
+                    ✖
+                </a>
+
+            </div>
         </div>
-        {% endfor %}
 
-        {% if goals|length == 0 %}
-            <p class="no-history">Целей пока нет</p>
-        {% endif %}
+        <!-- Сумма -->
+        <p class="text-slate-400 text-sm mb-1">
+            {{ g.saved }} / {{ g.target }} ₸
+        </p>
+
+        <!-- Прогресс -->
+        <div class="w-full h-2 bg-slate-800 rounded-xl overflow-hidden">
+            <div class="h-full bg-indigo-500 transition-all"
+                 style="width: {{ g.percent }}%;">
+            </div>
+        </div>
 
     </div>
+{% endfor %}
 
 </div>
 
-</body>
-</html>
+{% endblock %}

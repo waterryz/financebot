@@ -1,87 +1,52 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Добавить желание</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <script>
-        function toggleSidebar() {
-            document.getElementById("sidebar").classList.toggle("open");
-        }
-    </script>
-</head>
-<div class="top-profile">
-    <div class="profile-icon" onclick="toggleProfileMenu()">👤</div>
+{% extends "layout.html" %}
+{% block content %}
 
-    <div class="profile-menu" id="profileMenu">
-        <a href="/profile?token={{ token }}">👤 Профиль</a>
-        <a href="/settings?token={{ token }}">⚙ Настройки</a>
-        <a href="/login">🚪 Выйти</a>
-    </div>
-</div>
+<h1 class="text-3xl font-semibold text-center mb-10 flex items-center justify-center gap-2">
+    ➕ Добавить напоминание о покупке
+</h1>
 
-<script>
-function toggleProfileMenu() {
-    document.getElementById("profileMenu").classList.toggle("open");
-}
-</script>
+<form method="post" action="/add_wish?token={{ token }}"
+      class="max-w-xl mx-auto bg-slate-900/70 border border-white/10 rounded-3xl
+             p-6 shadow-2xl backdrop-blur-xl space-y-6 fade">
 
-<body>
-
-<div class="sidebar" id="sidebar">
-
-    <div class="sidebar-tab" onclick="toggleSidebar()">
-        ☰
+    <div>
+        <label class="text-sm text-slate-300">Название покупки</label>
+        <input type="text" name="item" required
+               class="w-full px-4 py-3 bg-slate-800 border border-white/10 rounded-xl
+                      text-slate-100 focus:border-indigo-400 outline-none">
     </div>
 
-    <div class="sidebar-content">
-        <a href="/home?token={{ token }}">🏠 Главная</a>
-        <a href="/add_expense?token={{ token }}">➖ Добавить расход</a>
-        <a href="/add_income?token={{ token }}">➕ Добавить доход</a>
-        <a href="/history?token={{ token }}">📜 История</a>
-        <a href="/goals?token={{ token }}">🎯 Цели</a>
-
-        <a href="/stats?token={{ token }}">📊 Статистика</a>
-
-        <!-- Новая функция -->
-        <a href="/wishlist?token={{ token }}">🕒 Отложенные покупки</a>
-
-
+    <div>
+        <label class="text-sm text-slate-300">Цена (необязательно)</label>
+        <input type="number" name="price" step="0.01"
+               class="w-full px-4 py-3 bg-slate-800 border border-white/10 rounded-xl
+                      text-slate-100 focus:border-indigo-400 outline-none">
     </div>
 
-</div>
+    <div>
+        <label class="text-sm text-slate-300">Напомнить через</label>
 
-<div class="auth-card">
-    <h1>Добавить желание</h1>
+        <div class="flex gap-3">
+            <input type="number" name="amount" min="1" value="3" required
+                   class="w-24 px-4 py-3 bg-slate-800 border border-white/10 rounded-xl
+                          text-slate-100 focus:border-indigo-400 outline-none">
 
-    <form method="post">
+            <select name="unit"
+                    class="px-4 py-3 bg-slate-800 border border-white/10 rounded-xl
+                           text-slate-100 focus:border-indigo-400 outline-none">
+                <option value="minutes">минут</option>
+                <option value="hours">часов</option>
+                <option value="days" selected>дней</option>
+            </select>
+        </div>
+    </div>
 
-        <label>Название покупки:</label>
-        <input type="text" name="item" required class="input-field">
+    <button
+        class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 transition
+               text-white text-lg font-semibold shadow-lg shadow-indigo-900/40">
+        Добавить
+    </button>
 
-        <label>Цена (необязательно):</label>
-        <input type="number" step="0.01" name="price" class="input-field">
+</form>
 
-        <label>Напомнить через:</label>
-
-            <div class="remind-box">
-             <input type="number" name="amount" value="3" min="1" class="remind-number">
-
-             <select name="unit" class="remind-unit">
-                    <option value="minutes">минут</option>
-                    <option value="hours">часов</option>
-                    <option value="days" selected>дней</option>
-              </select>
-            </div>
-
-
-
-        <button type="submit" class="profile-btn">Добавить</button>
-
-    </form>
-
-</div>
-
-</body>
-</html>
+{% endblock %}

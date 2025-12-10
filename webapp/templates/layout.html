@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title }}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            background: #020617;
+            color: #f1f5f9;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui;
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+            transition: 0.25s ease;
+        }
+
+        .glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(20px);
+        }
+
+        input, select, textarea {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            color: #f8fafc;
+            border-radius: 0.75rem;
+            padding: 0.6rem 0.8rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4);
+        }
+
+        /* лёгкая анимация */
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade { animation: fade 0.45s ease-out; }
+    </style>
+</head>
+
+<body>
+
+<!-- ФОН ЭФФЕКТЫ -->
+<div class="pointer-events-none fixed inset-0">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.12),transparent_60%)]"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(16,185,129,0.10),transparent_70%)]"></div>
+</div>
+
+<!-- ПРОФИЛЬ -->
+<div class="fixed top-0 right-0 z-40 p-4">
+    <div class="relative">
+        <button onclick="toggleProfileMenu()"
+                class="glass flex items-center gap-2 rounded-full px-3 py-2 shadow-lg border border-white/10">
+            <span class="bg-indigo-600 h-8 w-8 rounded-full flex items-center justify-center text-lg">👤</span>
+            <span class="hidden sm:inline text-white/90">Профиль</span>
+            <svg class="h-4 w-4 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+        </button>
+
+        <div id="profileMenu"
+             class="hidden absolute right-0 mt-2 w-48 card p-1 text-sm">
+            <a href="/profile?token={{ token }}" class="block px-3 py-2 rounded-xl hover:bg-white/10">👤 Профиль</a>
+            <a href="/settings?token={{ token }}" class="block px-3 py-2 rounded-xl hover:bg-white/10">⚙ Настройки</a>
+            <a href="/login"
+               class="block px-3 py-2 rounded-xl text-rose-400 hover:bg-rose-500/10">🚪 Выйти</a>
+        </div>
+    </div>
+</div>
+
+<!-- МОБИЛЬНОЕ МЕНЮ -->
+<button onclick="toggleSidebar()" class="fixed top-4 left-4 z-40 h-10 w-10 glass rounded-full md:hidden">☰</button>
+
+<!-- САЙДБАР -->
+{% include "sidebar.html" %}
+
+<!-- КОНТЕНТ -->
+<main class="relative mx-auto max-w-6xl min-h-screen px-4 pt-20 pb-10 md:pl-72 md:pt-12 fade">
+    {% block content %}{% endblock %}
+</main>
+
+<script>
+function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("-translate-x-full");
+}
+
+function toggleProfileMenu() {
+    document.getElementById("profileMenu").classList.toggle("hidden");
+}
+
+document.addEventListener("click", function(e) {
+    const menu = document.getElementById("profileMenu");
+    const btn = e.target.closest("button[onclick='toggleProfileMenu()']");
+    if (!menu) return;
+    if (btn) return;
+    if (!menu.contains(e.target)) menu.classList.add("hidden");
+});
+</script>
+
+</body>
+</html>

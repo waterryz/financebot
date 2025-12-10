@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1 class="text-3xl text-center font-semibold mb-8">💰 Пополнить цель</h1>
+
+<form method="post"
+      class="bg-slate-900/60 border border-white/10 rounded-2xl p-6 shadow-xl shadow-black/40 backdrop-blur-xl
+             max-w-md mx-auto space-y-6 fade">
+
+    <p class="text-center text-lg font-medium">{{ goal.name }}</p>
+    <p class="text-center text-slate-400 text-sm">
+        {{ goal.saved }} / {{ goal.target }} ₸
+    </p>
+
+    <div>
+        <label class="block mb-1 text-sm text-slate-300">Сумма (₸)</label>
+        <input name="amount" type="number" step="0.01" required
+               class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-white/10 text-slate-100
+                      focus:outline-none focus:border-indigo-400">
+    </div>
+
+    <button class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-lg font-semibold transition">
+        Пополнить
+    </button>
+
+</form>
+
+{% endblock %}
