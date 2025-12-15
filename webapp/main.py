@@ -4,7 +4,20 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 import os
-import openai
+from dotenv import load_dotenv
+
+load_dotenv()
+
+from openai import OpenAI
+
+def get_openai_client():
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise RuntimeError("OPENAI_API_KEY not set")
+    return OpenAI(api_key=api_key)
+
+
+
 
 # === DATABASE CORE ===
 from webapp.db import get_conn, init_db
@@ -1068,9 +1081,6 @@ def goal_withdraw_post(
 
 chat_router = APIRouter()
 
-# !! СВОЙ КЛЮЧ СЮДА ПОДСТАВЬ !!
-openai.api_key = "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"
-
 
 class ChatRequest(BaseModel):
     message: str
@@ -1078,15 +1088,28 @@ class ChatRequest(BaseModel):
 
 @chat_router.post("/api/support_chat")
 async def support_chat(data: ChatRequest):
-    response = openai.ChatCompletion.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "Ты поддержка финансового приложения FinanceBot."},
-            {"role": "user", "content": data.message},
-        ]
-    )
-    reply = response["choices"][0]["message"]["content"]
-    return {"reply": reply}
+    import openai
+    print("OPENAI FILE:", openai.__file__)
+    print("OPENAI VERSION:", openai.__version__)
+
+    try:
+        client = get_openai_client()
+
+        response = client.responses.create(
+            model="gpt-4o-mini",
+            input=[
+                {"role": "system", "content": "Ты поддержка FinanceBot."},
+                {"role": "user", "content": data.message}
+            ]
+        )
+
+        return {"reply": response.output_text}
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return {"reply": f"AI ERROR: {str(e)}"}
+
 
 
 app.include_router(chat_router)

@@ -13,7 +13,6 @@
             color: #f1f5f9;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui;
         }
-
         .card {
             background: rgba(15, 23, 42, 0.92);
             border: 1px solid rgba(148, 163, 184, 0.2);
@@ -21,38 +20,18 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
             transition: 0.25s ease;
         }
-
         .glass {
             background: rgba(15, 23, 42, 0.7);
             backdrop-filter: blur(20px);
         }
-
-        input, select, textarea {
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(148, 163, 184, 0.25);
-            color: #f8fafc;
-            border-radius: 0.75rem;
-            padding: 0.6rem 0.8rem;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4);
-        }
-
-        /* лёгкая анимация */
-        @keyframes fade {
-            from { opacity: 0; transform: translateY(10px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fade { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
         .fade { animation: fade 0.45s ease-out; }
     </style>
 </head>
 
 <body>
 
-<!-- ФОН ЭФФЕКТЫ -->
+<!-- ФОН -->
 <div class="pointer-events-none fixed inset-0">
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.12),transparent_60%)]"></div>
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(16,185,129,0.10),transparent_70%)]"></div>
@@ -80,8 +59,17 @@
     </div>
 </div>
 
-<!-- МОБИЛЬНОЕ МЕНЮ -->
-<button onclick="toggleSidebar()" class="fixed top-4 left-4 z-40 h-10 w-10 glass rounded-full md:hidden">☰</button>
+<!-- МОБИЛЬНАЯ КНОПКА -->
+<button id="sidebarToggle"
+        onclick="toggleSidebar()"
+        class="fixed top-4 left-4 z-40 h-10 w-10 glass rounded-full md:hidden transition-all duration-300">
+    ☰
+</button>
+
+<!-- ТЕМНЫЙ ФОН ДЛЯ МОБИЛЬНОГО МЕНЮ -->
+<div id="overlay"
+     class="hidden fixed inset-0 bg-black/40 z-20 md:hidden"
+     onclick="toggleSidebar()"></div>
 
 <!-- САЙДБАР -->
 {% include "sidebar.html" %}
@@ -93,7 +81,21 @@
 
 <script>
 function toggleSidebar() {
-    document.getElementById("sidebar").classList.toggle("-translate-x-full");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const toggle = document.getElementById("sidebarToggle");
+
+    const isOpen = !sidebar.classList.contains("-translate-x-full");
+
+    if (isOpen) {
+        sidebar.classList.add("-translate-x-full");
+        overlay.classList.add("hidden");
+        toggle.style.transform = "translateX(0)";
+    } else {
+        sidebar.classList.remove("-translate-x-full");
+        overlay.classList.remove("hidden");
+        toggle.style.transform = "translateX(260px)";
+    }
 }
 
 function toggleProfileMenu() {
