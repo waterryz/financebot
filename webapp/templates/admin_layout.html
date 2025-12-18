@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ title or "Админ-панель" }}</title>
 
-    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
         body {
-            background: #020617; /* slate-950 */
+            background: #020617;
             color: #f1f5f9;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui;
         }
@@ -31,7 +29,6 @@
 
     {% include "admin_sidebar.html" %}
 
-    <!-- MAIN CONTENT -->
     <main class="md:ml-64 p-6 fade">
         {% block content %}{% endblock %}
     </main>

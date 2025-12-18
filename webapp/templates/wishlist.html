@@ -7,7 +7,6 @@
         🛍 Отложенные покупки
     </h1>
 
-    <!-- Кнопка добавить -->
     <div class="w-full flex justify-center mt-6 mb-10">
         <a href="/add_wish?token={{ token }}"
            class="rounded-2xl bg-indigo-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-indigo-500 transition text-lg">
@@ -15,7 +14,6 @@
         </a>
     </div>
 
-    <!-- Список желаний -->
     <div class="space-y-4">
 
         {% for w in wishes %}
@@ -45,7 +43,6 @@
         </div>
         {% else %}
 
-        <!-- Пустой список -->
         <p class="text-slate-500 text-center mt-10 text-lg">
             Нет отложенных покупок 😌<br>
             <span class="text-slate-400 text-base">Добавьте новое напоминание!</span>

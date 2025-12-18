@@ -1,60 +1,80 @@
 {% extends "layout.html" %}
+
 {% block content %}
 
-<h1 class="text-3xl font-semibold text-center mb-8 flex items-center justify-center gap-2">
-    🎯 Цели
-</h1>
+<div class="max-w-5xl mx-auto px-6">
 
-<div class="grid md:grid-cols-2 gap-6 fade">
+    <!-- Заголовок -->
+    <div class="flex items-center justify-between mb-8">
+        <h1 class="text-3xl font-semibold flex items-center gap-2">
+            🎯 Цели
+        </h1>
 
-{% for g in goals %}
-    <div class="bg-slate-900/60 border border-white/10 rounded-2xl p-5 shadow-xl shadow-black/40 backdrop-blur-xl">
+        <a href="/add_goal?token={{ token }}"
+           class="px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 transition text-white font-medium">
+            ➕ Создать цель
+        </a>
+    </div>
 
-        <!-- ВЕРХНИЙ БЛОК: Название + кнопки -->
-        <div class="flex justify-between items-center mb-2">
+    {% if goals|length == 0 %}
+        <div class="text-slate-400 text-center py-20">
+            Целей пока нет
+        </div>
+    {% endif %}
 
-            <!-- Название цели -->
-            <h2 class="text-lg font-semibold">{{ g.name }}</h2>
+    <div class="space-y-6">
 
-            <!-- Кнопки -->
-            <div class="flex items-center gap-2">
+        {% for goal in goals %}
 
-                <!-- Пополнить -->
-                <a href="/add_goal_money?token={{ token }}&id={{ g.id }}"
-                   class="text-xs px-3 py-1 rounded-full bg-indigo-600 hover:bg-indigo-500 transition text-white">
-                   Пополнить
-                </a>
+        {% set percent = (goal.saved / goal.target * 100) if goal.target else 0 %}
 
-                <!-- Вывести -->
-                <a href="/goal_withdraw?token={{ token }}&id={{ g.id }}"
-                   class="text-xs px-3 py-1 rounded-full bg-indigo-500 hover:bg-indigo-400 transition text-white">
-                    Вывести
-                </a>
+        <div class="bg-slate-900/70 border border-white/10 rounded-2xl p-6 shadow-xl">
 
-                <!-- Удалить -->
-                <a href="/goal_delete?token={{ token }}&id={{ g.id }}"
-                   onclick="return confirm('Удалить эту цель?');"
-                   class="text-xs px-3 py-1 rounded-full bg-red-600 hover:bg-red-500 transition text-white">
-                    ✖
-                </a>
+            <!-- ВЕРХ -->
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <div class="text-xl font-semibold">
+                        {{ goal.name }}
+                    </div>
+                    <div class="text-sm text-slate-400">
+                        {{ goal.saved }} ₸ из {{ goal.target }} ₸
+                    </div>
+                </div>
 
+                <div class="flex gap-2">
+                    <a href="/add_goal_money?token={{ token }}&id={{ goal.id }}"
+                       class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-sm text-white">
+                        💰 Пополнить
+                    </a>
+
+                    <a href="/goal_withdraw?token={{ token }}&id={{ goal.id }}"
+                       class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-sm text-white">
+                        ⬇ Вывести
+                    </a>
+
+                    <a href="/goal_delete?token={{ token }}&id={{ goal.id }}"
+                       class="px-3 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white">
+                        ✕
+                    </a>
+                </div>
             </div>
+
+            <!-- ПРОГРЕСС -->
+            <div class="w-full h-3 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-full bg-indigo-500"
+                     style="width: {{ percent | round(1) }}%">
+                </div>
+            </div>
+
+            <div class="text-xs text-slate-400 mt-2">
+                {{ percent | round(1) }}% выполнено
+            </div>
+
         </div>
 
-        <!-- Сумма -->
-        <p class="text-slate-400 text-sm mb-1">
-            {{ g.saved }} / {{ g.target }} ₸
-        </p>
-
-        <!-- Прогресс -->
-        <div class="w-full h-2 bg-slate-800 rounded-xl overflow-hidden">
-            <div class="h-full bg-indigo-500 transition-all"
-                 style="width: {{ g.percent }}%;">
-            </div>
-        </div>
+        {% endfor %}
 
     </div>
-{% endfor %}
 
 </div>
 

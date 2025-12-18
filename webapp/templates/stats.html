@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<!-- Chart.js -->
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="max-w-5xl mx-auto">
@@ -10,10 +10,8 @@
         📊 Статистика
     </h1>
 
-    <!-- Верхний блок: Итоги, категории, последняя транзакция -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
 
-        <!-- Итоги месяца -->
         <div class="bg-slate-900/80 rounded-3xl p-5 border border-white/10 shadow">
             <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
                 📅 Итоги месяца
@@ -41,8 +39,6 @@
             </div>
         </div>
 
-
-        <!-- Топ категорий -->
         <div class="bg-slate-900/80 rounded-3xl p-5 border border-white/10 shadow">
             <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
                 🔥 Топ категорий
@@ -63,7 +59,6 @@
         </div>
 
 
-        <!-- Последняя транзакция -->
         <div class="bg-slate-900/80 rounded-3xl p-5 border border-white/10 shadow">
             <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
                 🧾 Последняя транзакция
@@ -102,8 +97,6 @@
 
     </div>
 
-
-    <!-- ГРАФИК расходов -->
     <div class="mt-4">
         <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
             📈 Динамика расходов по дням
@@ -116,8 +109,6 @@
 
 </div>
 
-
-<!-- SCRIPT: построение графика -->
 <script>
     const labels = {{ stats.daily_expenses | map(attribute=0) | list | tojson }};
     const values = {{ stats.daily_expenses | map(attribute=1) | list | tojson }};

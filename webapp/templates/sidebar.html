@@ -5,7 +5,6 @@
 
     <div class="flex flex-col h-full">
 
-        <!-- HEADER -->
         <div class="flex items-center gap-3 px-5 py-4 border-b border-white/10">
             <div class="h-10 w-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-2xl">
                 💸
@@ -16,7 +15,6 @@
             </div>
         </div>
 
-        <!-- NAV -->
         <nav class="flex-1 px-4 py-4 space-y-1 text-sm">
 
             <a href="/home?token={{ token }}"
@@ -27,26 +25,6 @@
                           text-slate-200 hover:bg-slate-800/70
                       {% endif %}">
                 🏠 Главная
-            </a>
-
-            <a href="/add_expense?token={{ token }}"
-               class="flex items-center gap-2 px-3 py-2 rounded-lg transition
-                      {% if current_page == 'add_expense' %}
-                          bg-rose-500/20 text-rose-300
-                      {% else %}
-                          text-slate-200 hover:bg-slate-800/70
-                      {% endif %}">
-                ➖ Добавить расход
-            </a>
-
-            <a href="/add_income?token={{ token }}"
-               class="flex items-center gap-2 px-3 py-2 rounded-lg transition
-                      {% if current_page == 'add_income' %}
-                          bg-emerald-500/20 text-emerald-300
-                      {% else %}
-                          text-slate-200 hover:bg-slate-800/70
-                      {% endif %}">
-                ➕ Добавить доход
             </a>
 
             <a href="/history?token={{ token }}"

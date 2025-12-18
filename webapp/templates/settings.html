@@ -2,12 +2,9 @@
 {% block content %}
 
 <div class="max-w-xl mx-auto mt-10">
-
     <h1 class="text-3xl font-semibold mb-8 flex items-center justify-center gap-2">
         ⚙ Настройки
     </h1>
-
-    <!-- Уведомления (простые текстом под заголовком) -->
     {% if request.query_params.success == "username_updated" %}
         <p class="mb-4 text-sm text-emerald-400">Логин успешно обновлён ✅</p>
     {% elif request.query_params.success == "password_updated" %}
@@ -18,7 +15,6 @@
         <p class="mb-4 text-sm text-rose-400">Текущий пароль неверный ❌</p>
     {% endif %}
 
-    <!-- Смена логина -->
     <div class="bg-slate-900/80 rounded-2xl p-6 border border-white/10 shadow mb-8">
         <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
             🔤 Смена логина
@@ -47,16 +43,12 @@
             </button>
         </form>
     </div>
-
-    <!-- Смена пароля -->
     <div class="bg-slate-900/80 rounded-2xl p-6 border border-white/10 shadow mb-8">
         <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
             🔐 Смена пароля
         </h2>
-
         <form action="/update_password" method="post" class="space-y-4">
             <input type="hidden" name="token" value="{{ token }}">
-
             <input
                 type="password"
                 name="old_password"
@@ -64,7 +56,6 @@
                 required
                 class="w-full p-3 rounded-xl bg-slate-800 border border-white/10 text-white"
             >
-
             <input
                 type="password"
                 name="new_password"
@@ -72,14 +63,11 @@
                 required
                 class="w-full p-3 rounded-xl bg-slate-800 border border-white/10 text-white"
             >
-
             <button class="bg-primary-600 hover:bg-primary-500 w-full py-3 rounded-xl font-semibold text-white">
                 Обновить пароль
             </button>
         </form>
     </div>
-
-
 </div>
 
 

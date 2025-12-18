@@ -14,10 +14,6 @@ def get_conn():
     )
 
 
-# ======================
-# USERS
-# ======================
-
 def create_user(username, password):
     conn = get_conn()
     cur = conn.cursor()
@@ -85,10 +81,6 @@ def get_username_by_id(user_id):
     return row[0] if row else None
 
 
-# ======================
-# TOKENS
-# ======================
-
 def generate_token(user_id):
     conn = get_conn()
     cur = conn.cursor()
@@ -117,10 +109,6 @@ def get_user_id_from_token(token):
     conn.close()
     return row[0] if row else None
 
-
-# ======================
-# PROFILE SETTINGS
-# ======================
 
 def update_username(user_id, new_username):
     conn = get_conn()
@@ -185,10 +173,6 @@ def delete_user(user_id):
     conn.close()
 
 
-# ======================
-# CATEGORIES
-# ======================
-
 def add_category(name, op_type):
     conn = get_conn()
     cur = conn.cursor()
@@ -240,10 +224,6 @@ def add_category(user_id, name, type, icon):
     cur.close()
     conn.close()
 
-
-# ======================
-# TRANSACTIONS
-# ======================
 
 def add_transaction(user_id, amount, op_type, category_id, description):
     conn = get_conn()
@@ -303,10 +283,6 @@ def get_transactions(user_id):
 
     return transactions
 
-
-# ======================
-# BALANCE & USER STATS
-# ======================
 
 def get_balance(user_id):
     conn = get_conn()
@@ -371,10 +347,6 @@ def get_stats(user_id):
     conn.close()
     return income, expense, [(r[0], float(r[1])) for r in cats]
 
-
-# ======================
-# WISHLIST
-# ======================
 
 def add_wish(user_id, item, price, amount, unit):
     conn = get_conn()
@@ -478,17 +450,10 @@ def get_due_wishes():
     return rows
 
 
-# ======================
-# INIT DB
-# ======================
-
 def init_db():
     conn = get_conn()
     cur = conn.cursor()
 
-    # ======================
-    # USERS
-    # ======================
     cur.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
@@ -500,9 +465,6 @@ def init_db():
         );
     """)
 
-    # ======================
-    # TOKENS
-    # ======================
     cur.execute("""
         CREATE TABLE IF NOT EXISTS tokens (
             id SERIAL PRIMARY KEY,
@@ -511,22 +473,16 @@ def init_db():
         );
     """)
 
-    # ======================
-    # WALLETS (ГЛАВНОЕ)
-    # ======================
     cur.execute("""
         CREATE TABLE IF NOT EXISTS wallets (
             id SERIAL PRIMARY KEY,
             user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
             name VARCHAR(50) NOT NULL,
             balance NUMERIC(12,2) DEFAULT 0,
-            icon text unique
+            icon text
         );
     """)
 
-    # ======================
-    # CATEGORIES (ИКОНКИ)
-    # ======================
     cur.execute("""
         CREATE TABLE IF NOT EXISTS categories (
             id SERIAL PRIMARY KEY,
@@ -537,9 +493,6 @@ def init_db():
         );
     """)
 
-    # ======================
-    # TRANSACTIONS
-    # ======================
     cur.execute("""
         CREATE TABLE IF NOT EXISTS transactions (
             id SERIAL PRIMARY KEY,
@@ -553,9 +506,6 @@ def init_db():
         );
     """)
 
-    # ======================
-    # WISHES
-    # ======================
     cur.execute("""
         CREATE TABLE IF NOT EXISTS wish_timers (
             id SERIAL PRIMARY KEY,
@@ -568,9 +518,6 @@ def init_db():
         );
     """)
 
-    # ======================
-    # GOALS
-    # ======================
     cur.execute("""
         CREATE TABLE IF NOT EXISTS goals (
             id SERIAL PRIMARY KEY,
@@ -586,9 +533,6 @@ def init_db():
     cur.close()
     conn.close()
 
-# ======================
-# TELEGRAM HELPERS
-# ======================
 
 def get_telegram_chat_id(user_id):
     conn = get_conn()
@@ -624,10 +568,6 @@ def get_telegram_id(user_id):
     conn.close()
     return row[0] if row else None
 
-
-# ======================
-# ADMIN STUFF
-# ======================
 
 def get_all_users():
     conn = get_conn()
@@ -824,10 +764,6 @@ def get_last_transaction(user_id):
     }
 
 
-# ======================
-# GOALS
-# ======================
-
 def add_goal(user_id, name, target):
     conn = get_conn()
     cur = conn.cursor()
@@ -867,7 +803,6 @@ def get_current_goal(user_id):
 
     goal_id, name, target, saved = row
 
-    # ВАЖНО: приводим Decimal -> float
     target = float(target)
     saved = float(saved)
 
@@ -885,8 +820,6 @@ def get_current_goal(user_id):
         "saved": saved,
         "percent": percent,
     }
-
-
 
 
 def add_to_goal(user_id, amount):
@@ -1138,17 +1071,17 @@ def get_top_expense_categories(db):
     amounts = [float(r[1]) for r in rows]
 
     return labels, amounts
+
+
 def add_income(user_id, amount, category_id, wallet_id, description):
     conn = get_conn()
     cur = conn.cursor()
 
-    # транзакция
     cur.execute("""
         INSERT INTO transactions (user_id, amount, type, category_id, wallet_id, description)
         VALUES (%s,%s,'income',%s,%s,%s)
     """, (user_id, amount, category_id, wallet_id, description))
 
-    # пополнение кошелька
     cur.execute("""
         UPDATE wallets SET balance = balance + %s
         WHERE id=%s AND user_id=%s
@@ -1157,24 +1090,23 @@ def add_income(user_id, amount, category_id, wallet_id, description):
     conn.commit()
     cur.close()
     conn.close()
+
+
 def add_expense(user_id, amount, category_id, wallet_id, description):
     conn = get_conn()
     cur = conn.cursor()
 
-    # проверка баланса
     cur.execute("SELECT balance FROM wallets WHERE id=%s AND user_id=%s", (wallet_id, user_id))
     balance = cur.fetchone()[0]
 
     if balance < amount:
         raise Exception("Недостаточно средств")
 
-    # транзакция
     cur.execute("""
         INSERT INTO transactions (user_id, amount, type, category_id, wallet_id, description)
         VALUES (%s,%s,'expense',%s,%s,%s)
     """, (user_id, amount, category_id, wallet_id, description))
 
-    # списание
     cur.execute("""
         UPDATE wallets SET balance = balance - %s
         WHERE id=%s AND user_id=%s
@@ -1183,6 +1115,8 @@ def add_expense(user_id, amount, category_id, wallet_id, description):
     conn.commit()
     cur.close()
     conn.close()
+
+
 def get_wallets(user_id):
     conn = get_conn()
     cur = conn.cursor()
@@ -1233,6 +1167,7 @@ def get_category(category_id, user_id):
         "type": row[2],
         "icon": row[3],
     }
+
 
 def add_wallet(user_id, name, icon):
     conn = get_conn()

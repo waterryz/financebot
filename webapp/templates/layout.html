@@ -31,13 +31,13 @@
 
 <body>
 
-<!-- ФОН -->
+
 <div class="pointer-events-none fixed inset-0">
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.12),transparent_60%)]"></div>
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(16,185,129,0.10),transparent_70%)]"></div>
 </div>
 
-<!-- ПРОФИЛЬ -->
+
 <div class="fixed top-0 right-0 z-40 p-4">
     <div class="relative">
         <button onclick="toggleProfileMenu()"
@@ -59,22 +59,20 @@
     </div>
 </div>
 
-<!-- МОБИЛЬНАЯ КНОПКА -->
+
 <button id="sidebarToggle"
         onclick="toggleSidebar()"
         class="fixed top-4 left-4 z-40 h-10 w-10 glass rounded-full md:hidden transition-all duration-300">
     ☰
 </button>
 
-<!-- ТЕМНЫЙ ФОН ДЛЯ МОБИЛЬНОГО МЕНЮ -->
+
 <div id="overlay"
      class="hidden fixed inset-0 bg-black/40 z-20 md:hidden"
      onclick="toggleSidebar()"></div>
 
-<!-- САЙДБАР -->
 {% include "sidebar.html" %}
 
-<!-- КОНТЕНТ -->
 <main class="relative mx-auto max-w-6xl min-h-screen px-4 pt-20 pb-10 md:pl-72 md:pt-12 fade">
     {% block content %}{% endblock %}
 </main>

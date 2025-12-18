@@ -1,152 +1,736 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<div class="mt-6 space-y-8">
+<div class="w-full space-y-6">
 
-    <!-- =======================
-    ПРИВЕТСТВИЕ
-    ======================= -->
-    <section class="bg-slate-900/80 rounded-3xl border border-white/10 p-6">
-        <p class="text-xs uppercase tracking-[0.18em] text-slate-400">добро пожаловать</p>
-        <h1 class="text-3xl font-semibold mt-2">
-            {{ username }} <span class="animate-pulse">👋</span>
+    <!-- ВЕРХНИЙ БЛОК -->
+    <section
+      class="bg-slate-900/80 rounded-3xl border border-white/10
+             shadow-xl shadow-black/40
+             px-6 py-6 md:px-8 md:py-7
+             flex flex-col lg:flex-row
+             lg:items-center lg:justify-between
+             gap-6"
+    >
+
+      <!-- ЛЕВО: приветствие -->
+      <div class="space-y-3">
+        <p class="text-xs uppercase tracking-[0.18em] text-slate-400">
+          добро пожаловать
+        </p>
+
+        <h1 class="text-3xl md:text-4xl font-semibold tracking-tight text-white">
+          {{ username }} <span class="inline-block animate-pulse">👋</span>
         </h1>
+      </div>
+
+      <!-- КНОПКИ -->
+      <div class="flex flex-col gap-3 w-full lg:w-auto">
+        <button
+          onclick="openOperationModal(null,'expense')"
+          class="h-[56px] w-full lg:w-[260px]
+                 rounded-2xl
+                 bg-rose-500 hover:bg-rose-600
+                 text-white font-semibold
+                 shadow-[0_0_30px_rgba(244,63,94,0.35)]
+                 transition">
+          − Добавить расход
+        </button>
+
+        <button
+          onclick="openOperationModal(null,'income')"
+          class="h-[56px] w-full lg:w-[260px]
+                 rounded-2xl
+                 bg-emerald-500 hover:bg-emerald-600
+                 text-white font-semibold
+                 shadow-[0_0_30px_rgba(16,185,129,0.35)]
+                 transition">
+          + Добавить доход
+        </button>
+
+        <a
+          href="/history?token={{ token }}"
+          class="h-[56px] w-full lg:w-[260px]
+                 rounded-2xl
+                 bg-slate-700 hover:bg-slate-600
+                 text-white font-semibold
+                 flex items-center justify-center
+                 border border-white/10
+                 transition">
+          📜 История
+        </a>
+      </div>
+
+      <!-- БАЛАНС -->
+      <div
+        class="rounded-2xl
+               bg-gradient-to-br from-emerald-500/15 via-slate-900 to-slate-950
+               px-6 py-4
+               border border-emerald-400/30
+               shadow-inner
+               w-full lg:w-[260px]"
+      >
+        <p class="text-[11px] uppercase tracking-[0.16em] text-emerald-300/80 mb-1">
+          баланс, ₸
+        </p>
+
+        <p class="font-semibold text-emerald-400 leading-none
+                  text-[clamp(28px,4vw,52px)] whitespace-nowrap">
+          {{ "{:,.0f}".format(total_balance).replace(",", " ") }} ₸
+        </p>
+      </div>
+
     </section>
 
-    <!-- =======================
-    ДОХОДЫ
-    ======================= -->
-    <section class="bg-slate-900/80 rounded-3xl p-5 border border-white/10">
-        <h2 class="font-semibold mb-4">Доходы</h2>
+    {% if request.query_params.get("error") %}
+        <div
+            class="w-full rounded-2xl border border-rose-500/30 bg-rose-500/10 px-5 py-4
+                   text-rose-300"
+        >
+            {{ request.query_params.get("error") }}
+        </div>
+    {% endif %}
 
-        <div class="flex gap-4 flex-wrap">
-            {% for c in income_categories %}
-            <div class="relative w-24 text-center rounded-2xl p-2 hover:bg-slate-800 cursor-pointer"
-                 onclick="openOpModal({{ c.id }}, 'income', '{{ c.name }}', '{{ c.icon }}')">
+    <!-- ДОХОДЫ + КОШЕЛЬКИ -->
+    <section class="w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                <!-- DELETE -->
-                <button onclick="deleteCategory(event, {{ c.id }})"
-                        class="absolute top-1 right-1 text-xs text-slate-400 hover:text-red-400">✕</button>
+            <!-- ДОХОДЫ -->
+            <div
+                class="rounded-[28px] border border-white/10 bg-slate-900/70 shadow-2xl backdrop-blur-xl
+                       px-6 py-6"
+            >
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-white">
+                        Доходы
+                    </h2>
+                </div>
 
-                <div class="text-3xl">{{ c.icon }}</div>
-                <p class="text-sm truncate">{{ c.name }}</p>
-                <p class="text-xs text-slate-400">0 ₸</p>
+                <div class="mt-5 flex flex-wrap gap-5">
+                    {% for c in income_categories %}
+                        <!-- ВАЖНО: карточка div (НЕ button), чтобы не ломалось -->
+                        <div
+                            role="button"
+                            tabindex="0"
+                            onclick="openOperationModal({{ c.id }}, 'income')"
+                            class="group relative w-[96px] h-[96px] rounded-2xl border border-white/10
+                                   bg-slate-800/40 hover:bg-slate-800/60
+                                   shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]
+                                   transition flex flex-col items-center justify-center cursor-pointer"
+                        >
+                            <!-- крестик удалить -->
+                            <button
+                                type="button"
+                                onclick="event.stopPropagation(); deleteCategory({{ c.id }})"
+                                class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full
+                                       bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold
+                                       flex items-center justify-center
+                                       opacity-0 group-hover:opacity-100 transition"
+                                title="Удалить"
+                            >×</button>
+
+                            <div class="text-3xl group-hover:scale-110 transition">
+                                {{ c.icon }}
+                            </div>
+                            <div class="mt-2 text-xs text-slate-200 truncate max-w-[86px]">
+                                {{ c.name }}
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <button
+                        type="button"
+                        onclick="openCategoryModal('income')"
+                        class="w-[96px] h-[96px] rounded-2xl border border-white/10
+                               bg-slate-800/20 hover:bg-slate-800/45
+                               flex items-center justify-center
+                               transition"
+                    >
+                        <div class="text-3xl text-white/90">
+                            +
+                        </div>
+                    </button>
+                </div>
             </div>
-            {% endfor %}
 
-            <a href="/add_category?type=income&token={{ token }}"
-               class="w-24 h-24 flex items-center justify-center rounded-2xl bg-slate-800 text-2xl">➕</a>
+            <!-- КОШЕЛЬКИ -->
+            <div
+                class="rounded-[28px] border border-white/10 bg-slate-900/70 shadow-2xl backdrop-blur-xl
+                       px-6 py-6"
+            >
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-white">
+                        Кошельки
+                    </h2>
+                </div>
+
+                <div class="mt-5 flex flex-wrap gap-5">
+                    {% for w in wallets %}
+                        <div
+                            class="group relative w-[116px] h-[116px] rounded-2xl border border-white/10
+                                   bg-slate-800/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]
+                                   flex flex-col items-center justify-center"
+                        >
+                            <!-- крестик удалить -->
+                            <button
+                                type="button"
+                                onclick="deleteWallet({{ w.id }})"
+                                class="absolute top-2 right-2 w-5 h-5 rounded-full
+                                       bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold
+                                       flex items-center justify-center
+                                       opacity-0 group-hover:opacity-100 transition"
+                                title="Удалить"
+                            >×</button>
+
+                            <div class="text-3xl">
+                                {{ w.icon or '💳' }}
+                            </div>
+                            <div class="mt-2 text-sm text-slate-100 truncate max-w-[104px]">
+                                {{ w.name }}
+                            </div>
+                            <div class="mt-1 text-sm font-semibold text-emerald-400">
+                                {{ w.balance }} ₸
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <button
+                        type="button"
+                        onclick="openWalletModal()"
+                        class="w-[116px] h-[116px] rounded-2xl border border-white/10
+                               bg-slate-800/20 hover:bg-slate-800/45
+                               flex items-center justify-center transition"
+                    >
+                        <div class="text-3xl text-white/90">
+                            +
+                        </div>
+                    </button>
+                </div>
+            </div>
+
         </div>
     </section>
 
-    <!-- =======================
-    КОШЕЛЬКИ
-    ======================= -->
-    <section class="bg-slate-900/80 rounded-3xl p-5 border border-white/10">
-        <h2 class="font-semibold mb-4">Кошельки</h2>
-
-        <div class="flex gap-4 flex-wrap">
-            {% for w in wallets %}
-            <div class="w-28 text-center bg-slate-800/60 p-3 rounded-2xl">
-                <div class="text-3xl">{{ w.icon or "💳" }}</div>
-                <p class="text-sm">{{ w.name }}</p>
-                <p class="text-emerald-400 font-semibold">{{ w.balance }} ₸</p>
+    <!-- РАСХОДЫ -->
+    <section class="w-full">
+        <div
+            class="rounded-[28px] border border-white/10 bg-slate-900/70 shadow-2xl backdrop-blur-xl
+                   px-6 py-6"
+        >
+            <div class="flex items-center justify-between">
+                <h2 class="text-3xl font-semibold text-white">
+                    Расходы
+                </h2>
             </div>
-            {% endfor %}
 
-            <a href="/add_wallet?token={{ token }}"
-               class="w-28 h-24 flex items-center justify-center rounded-2xl bg-slate-800 text-2xl">➕</a>
+            <div class="mt-5 flex flex-wrap gap-5">
+                {% for c in expense_categories %}
+                    <!-- ВАЖНО: карточка div (НЕ button), чтобы не ломалось -->
+                    <div
+                        role="button"
+                        tabindex="0"
+                        onclick="openOperationModal({{ c.id }}, 'expense')"
+                        class="group relative w-[96px] h-[96px] rounded-2xl border border-white/10
+                               bg-slate-800/40 hover:bg-slate-800/60
+                               shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]
+                               transition flex flex-col items-center justify-center cursor-pointer"
+                    >
+                        <!-- крестик удалить -->
+                        <button
+                            type="button"
+                            onclick="event.stopPropagation(); deleteCategory({{ c.id }})"
+                            class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full
+                                   bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold
+                                   flex items-center justify-center
+                                   opacity-0 group-hover:opacity-100 transition"
+                            title="Удалить"
+                        >×</button>
+
+                        <div class="text-3xl group-hover:scale-110 transition">
+                            {{ c.icon }}
+                        </div>
+                        <div class="mt-2 text-xs text-slate-200 truncate max-w-[86px]">
+                            {{ c.name }}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <button
+                    type="button"
+                    onclick="openCategoryModal('expense')"
+                    class="w-[96px] h-[96px] rounded-2xl border border-white/10
+                           bg-slate-800/20 hover:bg-slate-800/45
+                           flex items-center justify-center transition"
+                >
+                    <div class="text-3xl text-white/90">
+                        +
+                    </div>
+                </button>
+            </div>
         </div>
     </section>
 
-    <!-- =======================
-    РАСХОДЫ
-    ======================= -->
-    <section class="bg-slate-900/80 rounded-3xl p-5 border border-white/10">
-        <h2 class="font-semibold mb-4">Расходы</h2>
+    <!-- СТАТИСТИКА -->
+    <section class="w-full">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
 
-        <div class="flex gap-4 flex-wrap">
-            {% for c in expense_categories %}
-            <div class="relative w-24 text-center rounded-2xl p-2 hover:bg-slate-800 cursor-pointer"
-                 onclick="openOpModal({{ c.id }}, 'expense', '{{ c.name }}', '{{ c.icon }}')">
+            <div class="rounded-[22px] border border-white/10 bg-slate-900/70 shadow-2xl backdrop-blur-xl px-5 py-5">
+                <div class="flex items-center gap-3">
+                    <div class="text-xl">📊</div>
+                    <div class="text-lg font-semibold text-white">Итоги месяца</div>
+                </div>
 
-                <button onclick="deleteCategory(event, {{ c.id }})"
-                        class="absolute top-1 right-1 text-xs text-slate-400 hover:text-red-400">✕</button>
-
-                <div class="text-3xl">{{ c.icon }}</div>
-                <p class="text-sm truncate">{{ c.name }}</p>
-                <p class="text-xs text-slate-400">0 ₸</p>
+                <div class="mt-4 space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Доход</span>
+                        <span class="text-emerald-400 font-semibold">{{ month_income }} ₸</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Расход</span>
+                        <span class="text-rose-400 font-semibold">{{ month_expense }} ₸</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Баланс</span>
+                        <span class="text-indigo-300 font-semibold">{{ month_balance }} ₸</span>
+                    </div>
+                </div>
             </div>
-            {% endfor %}
 
-            <a href="/add_category?type=expense&token={{ token }}"
-               class="w-24 h-24 flex items-center justify-center rounded-2xl bg-slate-800 text-2xl">➕</a>
+            <div class="rounded-[22px] border border-white/10 bg-slate-900/70 shadow-2xl backdrop-blur-xl px-5 py-5">
+                <div class="flex items-center gap-3">
+                    <div class="text-xl">🔥</div>
+                    <div class="text-lg font-semibold text-white">Топ категории</div>
+                </div>
+
+                <div class="mt-4 space-y-2 text-sm">
+                    {% if top_categories %}
+                        {% for name, total in top_categories %}
+                            <div class="flex justify-between">
+                                <span class="text-slate-200 truncate max-w-[170px]">{{ name }}</span>
+                                <span class="text-slate-100 font-semibold">{{ total }} ₸</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-slate-500">
+                            Пока нет данных
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="rounded-[22px] border border-white/10 bg-slate-900/70 shadow-2xl backdrop-blur-xl px-5 py-5">
+                <div class="flex items-center gap-3">
+                    <div class="text-xl">📌</div>
+                    <div class="text-lg font-semibold text-white">Последняя транзакция</div>
+                </div>
+
+                <div class="mt-4">
+                    {% if last_transaction %}
+                        <div class="text-sm text-slate-200">
+                            Категория:
+                            <span class="font-semibold">{{ last_transaction.category }}</span>
+                        </div>
+                        <div class="mt-2 text-2xl font-semibold text-white">
+                            {{ last_transaction.amount }} ₸
+                        </div>
+                        <div class="mt-2 text-xs text-slate-500">
+                            {{ last_transaction.date }}
+                        </div>
+                    {% else %}
+                        <div class="text-slate-500">
+                            Нет операций
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="rounded-[22px] border border-white/10 bg-slate-900/70 shadow-2xl backdrop-blur-xl px-5 py-5">
+                <div class="flex items-center gap-3">
+                    <div class="text-xl">🎯</div>
+                    <div class="text-lg font-semibold text-white">Цель</div>
+                </div>
+
+                <div class="mt-4">
+                    {% if goal %}
+                        <div class="text-sm text-slate-200">
+                            {{ goal.name }}
+                        </div>
+                        <div class="mt-1 text-xs text-slate-500">
+                            {{ goal.saved }} / {{ goal.target }} ₸
+                        </div>
+
+                        <div class="mt-3 w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                            <div class="h-full bg-indigo-500 transition-all duration-700"
+                                 style="width: {{ goal.percent }}%">
+                            </div>
+                        </div>
+
+                        <div class="mt-2 text-sm text-indigo-300">
+                            Прогресс: {{ goal.percent }}%
+                        </div>
+                    {% else %}
+                        <div class="text-slate-500">
+                            Цель не задана
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
         </div>
     </section>
+
 </div>
 
-<!-- =======================
-MODAL
-======================= -->
-<div id="opModal"
-     class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+<!-- ====================== MODALS ====================== -->
 
-    <div class="bg-slate-900 w-[380px] rounded-2xl p-6 border border-white/10">
-        <div class="flex justify-between items-center mb-4">
-            <h2 id="opTitle" class="font-semibold text-lg"></h2>
-            <button onclick="closeOpModal()">✕</button>
-        </div>
-
-        <form method="post" action="/add_operation" class="space-y-4">
+<div id="operationModal" class="fixed inset-0 hidden items-center justify-center bg-black/60 z-50 px-4">
+    <div class="w-full max-w-[520px] rounded-[28px] border border-white/10 bg-slate-950/80 backdrop-blur-xl shadow-2xl">
+        <form id="operationForm" class="p-6 space-y-4">
             <input type="hidden" name="token" value="{{ token }}">
-            <input type="hidden" name="category_id" id="opCategoryId">
             <input type="hidden" name="type" id="opType">
 
-            <select name="wallet_id" required
-                    class="w-full bg-slate-800 p-3 rounded-xl">
-                {% for w in wallets %}
-                <option value="{{ w.id }}">{{ w.name }}</option>
+            <div class="text-center">
+                <div id="opTitle" class="text-xl font-semibold text-white"></div>
+                <div class="mt-1 text-sm text-slate-400">
+                    Выберите кошелёк, категорию и сумму
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-3">
+                <select name="wallet_id" required
+                        class="w-full rounded-2xl bg-slate-800/60 border border-white/10 px-4 py-3 text-slate-100">
+                    {% for w in wallets %}
+                        <option value="{{ w.id }}">{{ w.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <select id="opCategorySelectIncome" name="category_id"
+                        class="hidden w-full rounded-2xl bg-slate-800/60 border border-white/10 px-4 py-3 text-slate-100">
+                    {% for c in income_categories %}
+                        <option value="{{ c.id }}">{{ c.icon }} {{ c.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <select id="opCategorySelectExpense" name="category_id"
+                        class="hidden w-full rounded-2xl bg-slate-800/60 border border-white/10 px-4 py-3 text-slate-100">
+                    {% for c in expense_categories %}
+                        <option value="{{ c.id }}">{{ c.icon }} {{ c.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <input name="amount" type="number" step="0.01" required placeholder="Сумма"
+                       class="w-full rounded-2xl bg-slate-800/60 border border-white/10 px-4 py-3 text-slate-100">
+
+                <input name="description" placeholder="Комментарий"
+                       class="w-full rounded-2xl bg-slate-800/60 border border-white/10 px-4 py-3 text-slate-100">
+            </div>
+
+            <div id="opError"
+                 class="hidden rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-rose-300 text-sm text-center">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <button type="submit"
+                        class="rounded-2xl bg-emerald-500/90 hover:bg-emerald-500 text-white font-semibold py-3 border border-white/10 transition">
+                    Готово
+                </button>
+                <button type="button" onclick="closeOperationModal()"
+                        class="rounded-2xl bg-slate-700/60 hover:bg-slate-700 text-white font-semibold py-3 border border-white/10 transition">
+                    Отмена
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="categoryModal" class="fixed inset-0 hidden items-center justify-center bg-black/60 z-50 px-4">
+    <div class="w-full max-w-[560px] rounded-[28px] border border-white/10 bg-slate-950/80 backdrop-blur-xl shadow-2xl">
+        <form method="post" action="/add_category" class="p-6" id="categoryForm">
+            <input type="hidden" name="token" value="{{ token }}">
+            <input type="hidden" name="type" id="catType">
+            <input type="hidden" name="icon" id="catIcon">
+
+            <div class="text-center">
+                <div class="text-2xl font-semibold text-white">Новая категория</div>
+                <div class="mt-2 text-sm text-slate-400">Выберите иконку из списка ниже</div>
+            </div>
+
+            <div class="mt-5">
+                <input name="name" required placeholder="Название категории"
+                       class="w-full rounded-2xl bg-slate-800/60 border border-white/10 px-4 py-3 text-slate-100">
+            </div>
+
+            <div class="mt-5 grid grid-cols-6 gap-3">
+                {% for icon in ['💼','💰','🍔','☕','🚗','🏠','🎮','🛒','📦','🎁','💊','⚽','✈️','📱','💎','💳','🏦','🧾','🚌','🎓','👕','🐶','🎧','🍿'] %}
+                    <button type="button"
+                            class="icon-btn rounded-2xl border border-white/10 bg-slate-800/45 hover:bg-slate-800/70 text-2xl py-3 transition"
+                            onclick="selectIcon(this,'{{ icon }}')">
+                        {{ icon }}
+                    </button>
                 {% endfor %}
-            </select>
+            </div>
 
-            <input name="amount" type="number" step="0.01" required
-                   placeholder="Сумма"
-                   class="w-full bg-slate-800 p-3 rounded-xl">
+            <div id="catError"
+                 class="hidden mt-4 rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-rose-300 text-sm text-center">
+            </div>
 
-            <input name="description"
-                   placeholder="Комментарий"
-                   class="w-full bg-slate-800 p-3 rounded-xl">
+            <div class="grid grid-cols-2 gap-3 mt-6">
+                <button type="submit"
+                        class="rounded-2xl bg-indigo-500/90 hover:bg-indigo-500 text-white font-semibold py-3 border border-white/10 transition">
+                    Сохранить
+                </button>
+                <button type="button" onclick="closeCategoryModal()"
+                        class="rounded-2xl bg-slate-700/60 hover:bg-slate-700 text-white font-semibold py-3 border border-white/10 transition">
+                    Отмена
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
-            <button class="w-full bg-indigo-600 hover:bg-indigo-500 p-3 rounded-xl">
-                Сохранить
-            </button>
+<div id="walletModal" class="fixed inset-0 hidden items-center justify-center bg-black/60 z-50 px-4">
+    <div class="w-full max-w-[560px] rounded-[28px] border border-white/10 bg-slate-950/80 backdrop-blur-xl shadow-2xl">
+        <form method="post" action="/add_wallet" class="p-6" id="walletForm">
+            <input type="hidden" name="token" value="{{ token }}">
+            <input type="hidden" name="icon" id="walletIcon">
+
+            <div class="text-center">
+                <div class="text-2xl font-semibold text-white">Новый кошелёк</div>
+                <div class="mt-2 text-sm text-slate-400">Название + иконка из готовых</div>
+            </div>
+
+            <div class="mt-5">
+                <input name="name" required placeholder="Название кошелька"
+                       class="w-full rounded-2xl bg-slate-800/60 border border-white/10 px-4 py-3 text-slate-100">
+            </div>
+
+            <div class="mt-5 grid grid-cols-6 gap-3">
+                {% for icon in ['💳','💰','👛','🏦','📱','🪙','💵','💶','💷','💴','🧾','🏧'] %}
+                    <button type="button"
+                            class="wallet-icon-btn rounded-2xl border border-white/10 bg-slate-800/45 hover:bg-slate-800/70 text-2xl py-3 transition"
+                            onclick="selectWalletIcon(this,'{{ icon }}')">
+                        {{ icon }}
+                    </button>
+                {% endfor %}
+            </div>
+
+            <div id="walletError"
+                 class="hidden mt-4 rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-rose-300 text-sm text-center">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mt-6">
+                <button type="submit"
+                        class="rounded-2xl bg-indigo-500/90 hover:bg-indigo-500 text-white font-semibold py-3 border border-white/10 transition">
+                    Сохранить
+                </button>
+                <button type="button" onclick="closeWalletModal()"
+                        class="rounded-2xl bg-slate-700/60 hover:bg-slate-700 text-white font-semibold py-3 border border-white/10 transition">
+                    Отмена
+                </button>
+            </div>
         </form>
     </div>
 </div>
 
 <script>
-function openOpModal(id, type, name, icon) {
-    document.getElementById("opModal").classList.remove("hidden");
-    document.getElementById("opModal").classList.add("flex");
+const $ = (id) => document.getElementById(id)
 
-    document.getElementById("opTitle").innerText =
-        icon + " " + name + (type === 'income' ? " — доход" : " — расход");
+function openOperationModal(categoryId, type) {
+    $("opType").value = type
 
-    document.getElementById("opCategoryId").value = id;
-    document.getElementById("opType").value = type;
+    const title = type === "income" ? "Добавить доход" : "Добавить расход"
+    $("opTitle").innerText = title
+
+    const selIncome = $("opCategorySelectIncome")
+    const selExpense = $("opCategorySelectExpense")
+
+    selIncome.classList.add("hidden")
+    selExpense.classList.add("hidden")
+
+    if (type === "income") {
+        selIncome.classList.remove("hidden")
+        if (categoryId) selIncome.value = String(categoryId)
+    } else {
+        selExpense.classList.remove("hidden")
+        if (categoryId) selExpense.value = String(categoryId)
+    }
+
+    $("opError").classList.add("hidden")
+    $("opError").innerText = ""
+
+    $("operationModal").classList.remove("hidden")
+    $("operationModal").classList.add("flex")
 }
 
-function closeOpModal() {
-    document.getElementById("opModal").classList.add("hidden");
+function closeOperationModal() {
+    $("operationModal").classList.add("hidden")
+    $("operationModal").classList.remove("flex")
 }
 
-function deleteCategory(e, id) {
-    e.stopPropagation();
-    if (!confirm("Удалить категорию?")) return;
+function openCategoryModal(type) {
+    $("catType").value = type
+    $("catIcon").value = ""
 
-    fetch(`/delete_category/${id}?token={{ token }}`, { method: "POST" })
-        .then(() => location.reload());
+    const catError = $("catError")
+    catError.classList.add("hidden")
+    catError.innerText = ""
+
+    document.querySelectorAll(".icon-btn").forEach(b => {
+        b.classList.remove("ring-2","ring-indigo-400","scale-110")
+    })
+
+    $("categoryModal").classList.remove("hidden")
+    $("categoryModal").classList.add("flex")
 }
+
+function closeCategoryModal() {
+    $("categoryModal").classList.add("hidden")
+    $("categoryModal").classList.remove("flex")
+}
+
+function openWalletModal() {
+    $("walletIcon").value = ""
+
+    const walletError = $("walletError")
+    walletError.classList.add("hidden")
+    walletError.innerText = ""
+
+    document.querySelectorAll(".wallet-icon-btn").forEach(b => {
+        b.classList.remove("ring-2","ring-indigo-400","scale-110")
+    })
+
+    $("walletModal").classList.remove("hidden")
+    $("walletModal").classList.add("flex")
+}
+
+function closeWalletModal() {
+    $("walletModal").classList.add("hidden")
+    $("walletModal").classList.remove("flex")
+}
+
+function selectIcon(btn, icon) {
+    $("catIcon").value = icon
+
+    document.querySelectorAll(".icon-btn").forEach(b => {
+        b.classList.remove("ring-2","ring-indigo-400","scale-110")
+    })
+
+    btn.classList.add("ring-2","ring-indigo-400","scale-110")
+}
+
+function selectWalletIcon(btn, icon) {
+    $("walletIcon").value = icon
+
+    document.querySelectorAll(".wallet-icon-btn").forEach(b => {
+        b.classList.remove("ring-2","ring-indigo-400","scale-110")
+    })
+
+    btn.classList.add("ring-2","ring-indigo-400","scale-110")
+}
+
+const opForm = $("operationForm")
+opForm.addEventListener("submit", async (e) => {
+    e.preventDefault()
+
+    const err = $("opError")
+    err.classList.add("hidden")
+    err.innerText = ""
+
+    const res = await fetch("/add_operation", {
+        method: "POST",
+        body: new FormData(opForm)
+    })
+
+    let data = null
+    try {
+        data = await res.json()
+    } catch (_) {
+        err.innerText = "Ошибка ответа сервера"
+        err.classList.remove("hidden")
+        return
+    }
+
+    if (!data.success) {
+        err.innerText = data.error || "Ошибка"
+        err.classList.remove("hidden")
+        return
+    }
+
+    window.location.reload()
+})
+
+const catForm = $("categoryForm")
+catForm.addEventListener("submit", (e) => {
+    const icon = $("catIcon").value
+    if (!icon) {
+        e.preventDefault()
+        const box = $("catError")
+        box.innerText = "Выберите иконку"
+        box.classList.remove("hidden")
+    }
+})
+
+const walletForm = $("walletForm")
+walletForm.addEventListener("submit", (e) => {
+    const icon = $("walletIcon").value
+    if (!icon) {
+        e.preventDefault()
+        const box = $("walletError")
+        box.innerText = "Выберите иконку"
+        box.classList.remove("hidden")
+    }
+})
+
+$("operationModal").addEventListener("click", (e) => {
+    if (e.target === $("operationModal")) closeOperationModal()
+})
+$("categoryModal").addEventListener("click", (e) => {
+    if (e.target === $("categoryModal")) closeCategoryModal()
+})
+$("walletModal").addEventListener("click", (e) => {
+    if (e.target === $("walletModal")) closeWalletModal()
+})
+
+/* ================== УДАЛЕНИЕ (ТОЛЬКО ДОБАВИЛ) ================== */
+
+async function deleteCategory(id) {
+    event.stopPropagation()
+
+    if (!confirm("Удалить категорию?")) return
+
+    const res = await fetch("/delete_category", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+            token: "{{ token }}",
+            category_id: id
+        })
+    })
+
+    location.reload()
+}
+
+async function deleteWallet(id) {
+    event.stopPropagation()
+
+    if (!confirm("Удалить кошелёк?")) return
+
+    const res = await fetch("/delete_wallet", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+            token: "{{ token }}",
+            wallet_id: id
+        })
+    })
+
+    location.reload()
+}
+
 </script>
 
 {% endblock %}
