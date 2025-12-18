@@ -3,338 +3,150 @@
 
 <div class="mt-6 space-y-8">
 
-    <!-- ВЕРХНИЙ БЛОК: приветствие + баланс + кнопки -->
-    <section
-        class="bg-slate-900/80 rounded-3xl border border-white/10 shadow-xl shadow-black/40
-               px-6 py-6 md:px-8 md:py-7 flex flex-col md:flex-row md:items-center md:justify-between gap-6 fade">
+    <!-- =======================
+    ПРИВЕТСТВИЕ
+    ======================= -->
+    <section class="bg-slate-900/80 rounded-3xl border border-white/10 p-6">
+        <p class="text-xs uppercase tracking-[0.18em] text-slate-400">добро пожаловать</p>
+        <h1 class="text-3xl font-semibold mt-2">
+            {{ username }} <span class="animate-pulse">👋</span>
+        </h1>
+    </section>
 
-        <div class="space-y-3">
-            <p class="text-xs uppercase tracking-[0.18em] text-slate-400">
-                добро пожаловать
-            </p>
+    <!-- =======================
+    ДОХОДЫ
+    ======================= -->
+    <section class="bg-slate-900/80 rounded-3xl p-5 border border-white/10">
+        <h2 class="font-semibold mb-4">Доходы</h2>
 
-            <h1 class="text-3xl md:text-4xl font-semibold tracking-tight">
-                {{ username }} <span class="inline-block animate-pulse">👋</span>
-            </h1>
+        <div class="flex gap-4 flex-wrap">
+            {% for c in income_categories %}
+            <div class="relative w-24 text-center rounded-2xl p-2 hover:bg-slate-800 cursor-pointer"
+                 onclick="openOpModal({{ c.id }}, 'income', '{{ c.name }}', '{{ c.icon }}')">
 
-            <p class="text-sm text-slate-400">
-                Ваш текущий баланс:
-            </p>
-        </div>
+                <!-- DELETE -->
+                <button onclick="deleteCategory(event, {{ c.id }})"
+                        class="absolute top-1 right-1 text-xs text-slate-400 hover:text-red-400">✕</button>
 
-        <div class="flex flex-col items-stretch md:items-end gap-4 w-full md:w-auto">
-
-            <!-- Баланс -->
-            <div
-                class="rounded-2xl bg-gradient-to-br from-emerald-500/15 via-slate-900 to-slate-950
-                       px-6 py-4 border border-emerald-400/30 shadow-inner w-full md:w-64">
-                <p class="text-[11px] uppercase tracking-[0.16em] text-emerald-300/80 mb-1">
-                    баланс, ₸
-                </p>
-                <p class="text-3xl font-semibold text-emerald-400">
-                    {{ "%.1f"|format(balance) }}
-                </p>
+                <div class="text-3xl">{{ c.icon }}</div>
+                <p class="text-sm truncate">{{ c.name }}</p>
+                <p class="text-xs text-slate-400">0 ₸</p>
             </div>
+            {% endfor %}
 
-            <!-- Кнопки действий -->
-            <div class="flex flex-wrap gap-3 justify-between md:justify-end">
-
-                <a href="/add_expense?token={{ token }}"
-                   class="inline-flex items-center gap-2 px-5 py-3 rounded-xl
-                          bg-rose-500 hover:bg-rose-400 text-white text-sm font-semibold
-                          shadow-lg shadow-rose-900/40 transform hover:-translate-y-0.5
-                          transition-all duration-200">
-                    <span class="text-lg">➖</span>
-                    <span>Добавить расход</span>
-                </a>
-
-                <a href="/add_income?token={{ token }}"
-                   class="inline-flex items-center gap-2 px-5 py-3 rounded-xl
-                          bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-semibold
-                          shadow-lg shadow-emerald-900/40 transform hover:-translate-y-0.5
-                          transition-all duration-200">
-                    <span class="text-lg">➕</span>
-                    <span>Добавить доход</span>
-                </a>
-
-                <a href="/history?token={{ token }}"
-                   class="inline-flex items-center gap-2 px-5 py-3 rounded-xl
-                          bg-slate-800 hover:bg-slate-700 text-slate-100 text-sm font-semibold
-                          shadow-lg shadow-black/30 transform hover:-translate-y-0.5
-                          transition-all duration-200">
-                    <span class="text-lg">📜</span>
-                    <span>История</span>
-                </a>
-            </div>
+            <a href="/add_category?type=income&token={{ token }}"
+               class="w-24 h-24 flex items-center justify-center rounded-2xl bg-slate-800 text-2xl">➕</a>
         </div>
     </section>
 
-    <!-- НИЖНИЙ РЯД КАРТОЧЕК -->
-    <section class="grid gap-4 md:grid-cols-4">
+    <!-- =======================
+    КОШЕЛЬКИ
+    ======================= -->
+    <section class="bg-slate-900/80 rounded-3xl p-5 border border-white/10">
+        <h2 class="font-semibold mb-4">Кошельки</h2>
 
-        <!-- Итоги месяца -->
-        <div
-            class="bg-slate-900/80 rounded-3xl p-5 border border-white/10 shadow-lg
-                   hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 card">
-
-            <h2 class="text-base font-semibold mb-4 flex items-center gap-2">
-                <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl
-                             bg-slate-800 text-lg">📊</span>
-                <span>Итоги месяца</span>
-            </h2>
-
-            <div class="space-y-2 text-sm">
-                <div class="flex justify-between">
-                    <span class="text-slate-400">Доход:</span>
-                    <span class="text-emerald-400 font-semibold">
-                        {{ month_income }} ₸
-                    </span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400">Расход:</span>
-                    <span class="text-rose-400 font-semibold">
-                        {{ month_expense }} ₸
-                    </span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400">Баланс:</span>
-                    <span class="text-indigo-400 font-semibold">
-                        {{ month_balance }} ₸
-                    </span>
-                </div>
+        <div class="flex gap-4 flex-wrap">
+            {% for w in wallets %}
+            <div class="w-28 text-center bg-slate-800/60 p-3 rounded-2xl">
+                <div class="text-3xl">{{ w.icon or "💳" }}</div>
+                <p class="text-sm">{{ w.name }}</p>
+                <p class="text-emerald-400 font-semibold">{{ w.balance }} ₸</p>
             </div>
+            {% endfor %}
+
+            <a href="/add_wallet?token={{ token }}"
+               class="w-28 h-24 flex items-center justify-center rounded-2xl bg-slate-800 text-2xl">➕</a>
         </div>
-
-        <!-- Топ категорий -->
-        <div
-            class="bg-slate-900/80 rounded-3xl p-5 border border-white/10 shadow-lg
-                   hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 card">
-
-            <h2 class="text-base font-semibold mb-4 flex items-center gap-2">
-                <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl
-                             bg-orange-500/20 text-lg">🔥</span>
-                <span>Топ категории по расходам</span>
-            </h2>
-
-            {% if top_categories %}
-                <div class="space-y-1.5 text-sm">
-                    {% for name, total in top_categories %}
-                        <div class="flex justify-between">
-                            <span class="text-slate-300 truncate pr-2">{{ name }}</span>
-                            <span class="text-slate-100 font-medium">{{ total }} ₸</span>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p class="text-slate-500 text-sm">
-                    Пока нет данных по расходам за этот месяц.
-                </p>
-            {% endif %}
-        </div>
-
-        <!-- Последняя транзакция -->
-        <div
-            class="bg-slate-900/80 rounded-3xl p-5 border border-white/10 shadow-lg
-                   hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 card">
-
-            <h2 class="text-base font-semibold mb-4 flex items-center gap-2">
-                <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl
-                             bg-pink-500/20 text-lg">📌</span>
-                <span>Последняя транзакция</span>
-            </h2>
-
-            {% if last_transaction %}
-                <div class="space-y-2 text-sm">
-                    <div class="flex justify-between">
-                        <span class="text-slate-400">Категория:</span>
-                        <span class="text-slate-100 font-medium">
-                            {{ last_transaction.category }}
-                        </span>
-                    </div>
-
-                    <div class="flex justify-between">
-                        <span class="text-slate-400">Сумма:</span>
-                        <span class="
-                            font-semibold
-                            {% if last_transaction.type == 'income' %}
-                                text-emerald-400
-                            {% else %}
-                                text-rose-400
-                            {% endif %}
-                        ">
-                            {{ last_transaction.amount }} ₸
-                        </span>
-                    </div>
-
-                    <div class="flex justify-between text-xs">
-                        <span class="text-slate-400">Дата:</span>
-                        <span class="text-slate-500">
-                            {{ last_transaction.date }}
-                        </span>
-                    </div>
-
-                    <p class="text-xs text-slate-400 mt-1">
-                        {{ last_transaction.description or "Без описания" }}
-                    </p>
-                </div>
-            {% else %}
-                <p class="text-slate-500 text-sm">
-                    Ещё нет транзакций.
-                </p>
-            {% endif %}
-        </div>
-
-        <!-- Текущая цель -->
-        <div
-            class="bg-slate-900/80 rounded-3xl p-5 border border-white/10 shadow-lg
-                   hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 card">
-
-            <h2 class="text-base font-semibold mb-4 flex items-center gap-2">
-                <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl
-                             bg-indigo-500/20 text-lg">🎯</span>
-                <span>Цель</span>
-            </h2>
-
-            {% if goal %}
-                <p class="text-sm font-medium text-slate-100 mb-2">
-                    {{ goal.name }}
-                </p>
-                <p class="text-xs text-slate-400 mb-2">
-                    {{ goal.saved }} / {{ goal.target }} ₸
-                </p>
-
-                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden mb-3">
-                    <div class="h-full rounded-full bg-indigo-500 transition-all duration-300"
-                         style="width: {{ goal.percent }}%;"></div>
-                </div>
-
-                <div class="flex items-center justify-between text-xs text-slate-400">
-                    <span>Прогресс</span>
-                    <span class="text-indigo-400 font-semibold">{{ goal.percent }}%</span>
-                </div>
-
-                <a href="/goals?token={{ token }}"
-                   class="mt-3 inline-flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300">
-                    Открыть все цели →
-                </a>
-            {% else %}
-                <p class="text-slate-500 text-sm mb-3">
-                    У вас ещё нет ни одной цели.
-                </p>
-                <a href="/add_goal?token={{ token }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-                          bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold
-                          shadow shadow-black/40 transition">
-                    <span>Создать цель</span>
-                </a>
-            {% endif %}
-        </div>
-
     </section>
 
+    <!-- =======================
+    РАСХОДЫ
+    ======================= -->
+    <section class="bg-slate-900/80 rounded-3xl p-5 border border-white/10">
+        <h2 class="font-semibold mb-4">Расходы</h2>
+
+        <div class="flex gap-4 flex-wrap">
+            {% for c in expense_categories %}
+            <div class="relative w-24 text-center rounded-2xl p-2 hover:bg-slate-800 cursor-pointer"
+                 onclick="openOpModal({{ c.id }}, 'expense', '{{ c.name }}', '{{ c.icon }}')">
+
+                <button onclick="deleteCategory(event, {{ c.id }})"
+                        class="absolute top-1 right-1 text-xs text-slate-400 hover:text-red-400">✕</button>
+
+                <div class="text-3xl">{{ c.icon }}</div>
+                <p class="text-sm truncate">{{ c.name }}</p>
+                <p class="text-xs text-slate-400">0 ₸</p>
+            </div>
+            {% endfor %}
+
+            <a href="/add_category?type=expense&token={{ token }}"
+               class="w-24 h-24 flex items-center justify-center rounded-2xl bg-slate-800 text-2xl">➕</a>
+        </div>
+    </section>
 </div>
 
-<!-- 🔵 КНОПКА ЧАТА -->
-<button id="chatToggleBtn"
-        class="fixed bottom-6 right-6 bg-indigo-600 hover:bg-indigo-500 text-white p-4 rounded-full shadow-lg shadow-black/40 text-xl transition transform hover:-translate-y-0.5 z-40">
-    💬
-</button>
+<!-- =======================
+MODAL
+======================= -->
+<div id="opModal"
+     class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
 
-<!-- 🟣 ОКНО ЧАТА -->
-<div id="chatWindow"
-     class="hidden fixed bottom-24 right-6 w-80 bg-slate-900/95 backdrop-blur-xl
-            shadow-2xl shadow-black/60 rounded-2xl border border-white/10 overflow-hidden z-50">
-
-    <div class="bg-slate-900/90 border-b border-white/10 text-slate-100 px-4 py-3 flex justify-between items-center">
-        <div class="flex items-center gap-2">
-            <span class="h-7 w-7 rounded-full bg-indigo-600 flex items-center justify-center text-sm">🤖</span>
-            <div>
-                <p class="text-xs font-semibold leading-tight">AI Поддержка</p>
-                <p class="text-[10px] text-slate-400 leading-tight">FinanceBot помощник</p>
-            </div>
+    <div class="bg-slate-900 w-[380px] rounded-2xl p-6 border border-white/10">
+        <div class="flex justify-between items-center mb-4">
+            <h2 id="opTitle" class="font-semibold text-lg"></h2>
+            <button onclick="closeOpModal()">✕</button>
         </div>
-        <button id="chatCloseBtn" class="text-slate-400 hover:text-slate-200 text-lg leading-none">
-            &times;
-        </button>
-    </div>
 
-    <div id="chatMessages" class="h-64 overflow-y-auto p-3 space-y-2 text-sm bg-slate-950/80">
-        <div class="text-slate-500 text-center text-xs">
-            Спроси о своих расходах, категориях или целях 💬
-        </div>
-    </div>
+        <form method="post" action="/add_operation" class="space-y-4">
+            <input type="hidden" name="token" value="{{ token }}">
+            <input type="hidden" name="category_id" id="opCategoryId">
+            <input type="hidden" name="type" id="opType">
 
-    <div class="border-t border-white/10 p-2 bg-slate-900/90 flex gap-2 items-center">
-        <input id="chatInput"
-               class="flex-1 bg-slate-950/80 border border-slate-700/80 rounded-xl px-3 py-1.5 text-xs
-                      text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-               placeholder="Написать сообщение..."
-               onkeydown="if(event.key==='Enter') sendChatMessage()">
-        <button onclick="sendChatMessage()"
-                class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold">
-            ➤
-        </button>
+            <select name="wallet_id" required
+                    class="w-full bg-slate-800 p-3 rounded-xl">
+                {% for w in wallets %}
+                <option value="{{ w.id }}">{{ w.name }}</option>
+                {% endfor %}
+            </select>
+
+            <input name="amount" type="number" step="0.01" required
+                   placeholder="Сумма"
+                   class="w-full bg-slate-800 p-3 rounded-xl">
+
+            <input name="description"
+                   placeholder="Комментарий"
+                   class="w-full bg-slate-800 p-3 rounded-xl">
+
+            <button class="w-full bg-indigo-600 hover:bg-indigo-500 p-3 rounded-xl">
+                Сохранить
+            </button>
+        </form>
     </div>
 </div>
 
 <script>
-    const chatWindow = document.getElementById("chatWindow");
-    const chatToggleBtn = document.getElementById("chatToggleBtn");
-    const chatCloseBtn = document.getElementById("chatCloseBtn");
+function openOpModal(id, type, name, icon) {
+    document.getElementById("opModal").classList.remove("hidden");
+    document.getElementById("opModal").classList.add("flex");
 
-    if (chatToggleBtn) {
-        chatToggleBtn.onclick = () => {
-            chatWindow.classList.remove("hidden");
-        };
-    }
+    document.getElementById("opTitle").innerText =
+        icon + " " + name + (type === 'income' ? " — доход" : " — расход");
 
-    if (chatCloseBtn) {
-        chatCloseBtn.onclick = () => {
-            chatWindow.classList.add("hidden");
-        };
-    }
+    document.getElementById("opCategoryId").value = id;
+    document.getElementById("opType").value = type;
+}
 
-    function appendChatMessage(author, text) {
-        const box = document.getElementById("chatMessages");
+function closeOpModal() {
+    document.getElementById("opModal").classList.add("hidden");
+}
 
-        const wrapper = document.createElement("div");
-        wrapper.className = author === "user" ? "text-right" : "text-left";
+function deleteCategory(e, id) {
+    e.stopPropagation();
+    if (!confirm("Удалить категорию?")) return;
 
-        const bubble = document.createElement("div");
-        bubble.className =
-            "inline-block px-3 py-2 rounded-2xl max-w-[80%] text-xs md:text-[13px] " +
-            (author === "user"
-                ? "bg-indigo-600 text-white ml-auto"
-                : "bg-slate-800 text-slate-100");
-
-        bubble.textContent = text;
-        wrapper.appendChild(bubble);
-        box.appendChild(wrapper);
-
-        box.scrollTop = box.scrollHeight;
-    }
-
-    async function sendChatMessage() {
-        const input = document.getElementById("chatInput");
-        const msg = input.value.trim();
-        if (!msg) return;
-
-        appendChatMessage("user", msg);
-        input.value = "";
-
-        try {
-            const resp = await fetch("/api/support_chat", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({ message: msg })
-            });
-
-            const data = await resp.json();
-            appendChatMessage("assistant", data.reply || "Пустой ответ от сервера.");
-        } catch (e) {
-            appendChatMessage("assistant", "Ошибка соединения с сервером.");
-        }
-    }
+    fetch(`/delete_category/${id}?token={{ token }}`, { method: "POST" })
+        .then(() => location.reload());
+}
 </script>
 
 {% endblock %}

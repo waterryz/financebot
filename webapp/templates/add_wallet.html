@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="max-w-md mx-auto mt-10 bg-slate-900/90 p-6 rounded-3xl border border-white/10">
+
+    <h2 class="text-xl font-semibold mb-6">💼 Новый кошелёк</h2>
+
+    <form method="post" action="/add_wallet">
+
+        <input type="hidden" name="token" value="{{ token }}">
+
+        <!-- NAME -->
+        <input
+            name="name"
+            placeholder="Название кошелька"
+            class="w-full mb-4 px-4 py-3 rounded-xl bg-slate-800 text-white"
+            required
+        >
+
+        <!-- ICON PICKER -->
+        <p class="text-sm mb-2 text-slate-400">Иконка</p>
+
+        <div class="grid grid-cols-6 gap-3 mb-6">
+            {% for i in ['💳','💰','🏦','💎','🪙','💵','💼','📱','👜','🎁','🔥','⚡'] %}
+            <label class="cursor-pointer">
+                <input type="radio" name="icon" value="{{ i }}" class="hidden peer" {% if loop.first %}checked{% endif %}>
+                <div class="h-12 flex items-center justify-center rounded-xl
+                            bg-slate-800 peer-checked:bg-indigo-600 transition text-xl">
+                    {{ i }}
+                </div>
+            </label>
+            {% endfor %}
+        </div>
+
+        <button
+            class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-semibold">
+            Сохранить
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

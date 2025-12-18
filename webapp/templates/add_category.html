@@ -1,0 +1,22 @@
+<form method="post" class="space-y-4">
+    <input type="hidden" name="token" value="{{ token }}">
+    <input type="hidden" name="type" value="{{ type }}">
+
+    <input name="name" placeholder="Название"
+           class="w-full p-3 rounded-xl bg-slate-800">
+
+    <select name="icon" class="w-full p-3 rounded-xl bg-slate-800">
+        <option value="💼">💼 Зарплата</option>
+        <option value="🎁">🎁 Подарки</option>
+        <option value="📈">📈 Инвестиции</option>
+        <option value="🍔">🍔 Еда</option>
+        <option value="🚕">🚕 Такси</option>
+        <option value="🏠">🏠 Дом</option>
+        <option value="🎮">🎮 Развлечения</option>
+        <option value="💊">💊 Аптека</option>
+    </select>
+
+    <button class="w-full bg-indigo-600 p-3 rounded-xl">
+        Сохранить
+    </button>
+</form>

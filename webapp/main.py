@@ -33,6 +33,8 @@ from webapp.db import (
     update_username,
     update_password,
     delete_user,
+    get_wallets,
+    add_wallet,
 )
 
 # === FINANCE ===
@@ -50,6 +52,7 @@ from webapp.db import (
     get_current_goal,
     add_to_goal,
     get_daily_expenses,
+    get_category
 )
 
 # === GOALS ===
@@ -166,7 +169,10 @@ def home(request: Request, token: str):
         return RedirectResponse("/login")
 
     username = get_username_by_id(user_id)
-    balance = get_balance(user_id)
+
+    wallets = get_wallets(user_id)
+    income_categories = get_categories("income", user_id)
+    expense_categories = get_categories("expense", user_id)
 
     month_income, month_expense, month_balance = get_month_summary(user_id)
     top_categories = get_top_categories(user_id)
@@ -176,8 +182,12 @@ def home(request: Request, token: str):
     return templates.TemplateResponse("home.html", {
         "request": request,
         "username": username,
-        "balance": balance,
         "token": token,
+
+        "wallets": wallets,
+        "income_categories": income_categories,
+        "expense_categories": expense_categories,
+
         "month_income": month_income,
         "month_expense": month_expense,
         "month_balance": month_balance,
@@ -1113,3 +1123,115 @@ async def support_chat(data: ChatRequest):
 
 
 app.include_router(chat_router)
+@app.get("/operation/{category_id}")
+async def operation_page(category_id: int, token: str, request: Request):
+    user_id = get_user_id_from_token(token)
+    category = get_category(category_id, user_id)
+    wallets = get_wallets(user_id)
+
+    return templates.TemplateResponse("operation.html", {
+        "request": request,
+        "category": category,
+        "wallets": wallets,
+        "token": token
+    })
+@app.post("/add_wallet")
+async def add_wallet_post(
+    token: str = Form(...),
+    name: str = Form(...),
+    icon: str = Form(...)
+):
+    user_id = get_user_id_from_token(token)
+    add_wallet(user_id, name, icon)
+    return RedirectResponse(f"/home?token={token}", status_code=303)
+
+@app.get("/add_wallet")
+def add_wallet_page(request: Request, token: str):
+    user_id = get_user_id_from_token(token)
+    if not user_id:
+        return RedirectResponse("/login")
+
+    return templates.TemplateResponse("add_wallet.html", {
+        "request": request,
+        "token": token
+    })
+
+@app.post("/add_category")
+def add_category_post(
+    token: str = Form(...),
+    name: str = Form(...),
+    type: str = Form(...),
+    icon: str = Form(...)
+):
+    user_id = get_user_id_from_token(token)
+    add_category(user_id, name, type, icon)
+    return RedirectResponse(f"/home?token={token}", status_code=303)
+
+@app.get("/add_category")
+def add_category_page(
+    token: str,
+    type: str,
+    request: Request
+):
+    return templates.TemplateResponse(
+        "add_category.html",
+        {
+            "request": request,
+            "token": token,
+            "type": type
+        }
+    )
+@app.post("/add_operation")
+async def add_operation(
+    token: str = Form(...),
+    category_id: int = Form(...),
+    wallet_id: int = Form(...),
+    amount: float = Form(...),
+    type: str = Form(...),
+    description: str = Form("")
+):
+    user_id = get_user_id_from_token(token)
+
+    if type == "income":
+        add_income(user_id, amount, category_id, wallet_id, description)
+    else:
+        add_expense(user_id, amount, category_id, wallet_id, description)
+
+    return RedirectResponse(f"/home?token={token}", status_code=303)
+@app.post("/delete_category/{cat_id}")
+async def delete_category(cat_id: int, token: str):
+    user_id = get_user_id_from_token(token)
+
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "DELETE FROM categories WHERE id=%s AND user_id=%s",
+        (cat_id, user_id)
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return {"ok": True}
+@app.get("/add_operation")
+async def add_operation_get():
+    return {"error": "Use POST"}
+from webapp.db import add_income, add_expense
+
+@app.post("/add_operation")
+async def add_operation(
+    token: str = Form(...),
+    category_id: int = Form(...),
+    wallet_id: int = Form(...),
+    amount: float = Form(...),
+    type: str = Form(...),
+    description: str = Form("")
+):
+    user_id = get_user_id_from_token(token)
+
+    if type == "income":
+        add_income(user_id, amount, category_id, wallet_id, description)
+    else:
+        add_expense(user_id, amount, category_id, wallet_id, description)
+
+    return RedirectResponse(f"/home?token={token}", status_code=303)
